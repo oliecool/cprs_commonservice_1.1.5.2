@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.hundsun.cprs.commonservice.sms.dao.SmsModelDAO">
+  
+  <resultMap id="BaseResultMap" type="SmsModel" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="SMS_CODE" property="smsCode" jdbcType="VARCHAR" />
+    <result column="SMS_TYPE" property="smsType" jdbcType="VARCHAR" />
+    <result column="SMS_CONTENT" property="smsContent" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="GMT_MODIFY" property="gmtModify" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="baseColumns" >
+    ID,
+    SMS_CODE,
+    SMS_TYPE,
+    SMS_CONTENT,
+    STATUS,
+    GMT_CREATE,
+    GMT_MODIFY
+  </sql>
+  
+  <sql id="whereClause" >
+  
+     <if test="id !=null and id!='' ">and ID = #{id}</if> 
+     <if test="smsCode !=null and smsCode!='' ">and  SMS_CODE = #{smsCode}</if> 
+     <if test="smsType !=null and smsType!='' ">and  SMS_TYPE = #{smsType}</if> 
+     <if test="smsContent !=null and smsContent!='' ">and SMS_CONTENT = #{smsContent}</if> 
+     <if test="status !=null and status!='' ">and STATUS = #{status}</if> 
+     <if test="gmtCreate !=null ">and  GMT_CREATE = #{gmtCreate}</if> 
+     <if test="gmtModify !=null ">and  GMT_MODIFY = #{gmtModify}</if> 
+  </sql>
+  
+  <!-- 根据主键查询短信模板详情信息 -->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select <include refid="baseColumns" />
+    from SMS_MODEL
+    where ID = #{id}
+  </select>
+  
+  <!-- 根据主键删除短信模板 -->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from SMS_MODEL
+    where ID = #{id}
+  </delete>
+  
+  <insert id="insert" parameterType="SmsModel">
+    insert into SMS_MODEL (<include refid="baseColumns" />)
+    values (0, #{smsCode}, #{smsType}, #{smsContent},
+      #{status}, now(), now())
+  </insert>
+  
+  <!-- 更新短信模板信息 -->
+  <update id="updateByPrimaryKey" parameterType="SmsModel" >
+    update SMS_MODEL
+    set SMS_CODE = #{smsCode},
+      SMS_TYPE = #{smsType},
+      SMS_CONTENT = #{smsContent},
+      STATUS = #{status},
+      GMT_MODIFY = now()
+    where ID = #{id}
+  </update>
+  
+  <!-- 分页头信息 -->
+<!-- 	<sql id="pageSQLHead"> -->
+<!-- 		<isNotEmpty property="beginIndex"> -->
+<!-- 			<isNotEmpty property="endIndex"> -->
+<!-- 				<![CDATA[ -->
+<!-- 					SELECT * FROM (SELECT ROWNUM AS NUMROW, p.* from   ( -->
+<!-- 	         	]]> -->
+<!-- 			</isNotEmpty> -->
+<!-- 		</isNotEmpty> -->
+<!-- 	</sql> -->
+	
+	<!-- 分页尾信息 -->
+<!-- 	<sql id="pageSQLFoot"> -->
+<!-- 		<isNotEmpty property="beginIndex"> -->
+<!-- 			<isNotEmpty property="endIndex"> -->
+<!-- 				<![CDATA[ -->
+<!-- 					) p  where rownum<=#endIndex#) WHERE NUMROW >= #beginIndex# -->
+<!--         		]]> -->
+<!-- 			</isNotEmpty> -->
+<!-- 		</isNotEmpty> -->
+<!-- 	</sql> -->
+	
+  <!-- 分页查询+查询分页数量 -->
+  <select id="selectByPage-count" parameterType="java.lang.Integer">
+  	select count(*) from sms_model 
+  	<where>
+  	 <include refid="whereClause"/> 
+  	</where>
+  </select>
+  
+  <!-- 分页查询+查询分页结果 -->
+<!--   <select id="selectByPage-list" resultMap="BaseResultMap"> -->
+<!--   	<include refid="pageSQLHead"/> -->
+<!-- 	 select <include refid="baseColumns"/> -->
+<!-- 	  from sms_model -->
+<!-- 	  <where> -->
+<!-- 	    <include refid="whereClause"/>  -->
+<!-- 	  </where> -->
+<!--   	<include refid="pageSQLFoot"/> -->
+<!--   </select> -->
+  
+  <!-- 修改短信模板状态 -->
+  <update id="changeSmsModelStatus" parameterType="SmsModel">
+  	update SMS_MODEL
+    set STATUS = #{status},
+      GMT_MODIFY = now()
+    where ID = #{id}
+  </update>
+  
+   <!-- 根据主键查询短信模板详情信息 -->
+  <select id="selectBySmsCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="baseColumns" />
+    from SMS_MODEL
+    where SMS_CODE = #{smsCode} and STATUS = 'using' 
+  </select>
+	
+	<select id="querySmsModelByPage" resultMap="BaseResultMap" parameterType="com.hundsun.cprs.commonservice.sms.domain.query.ModelQuery">
+		select <include refid="baseColumns" />
+    	from SMS_MODEL
+    	<where>
+    		1=1
+    		<if test="smsType !=null and smsType!='' ">and  SMS_TYPE like CONCAT('%',#{smsType},'%')</if>
+    		<if test="smsCode !=null and smsCode!='' ">and  SMS_CODE = #{smsCode}</if> 
+    		<if test="status !=null and status!='' ">and STATUS = #{status}</if> 
+    	</where>
+    	order by GMT_CREATE desc
+	</select>
+	
+	<select id="selectModelBySmsCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select <include refid="baseColumns" />
+	    from SMS_MODEL
+	    where SMS_CODE = #{smsCode} 
+	</select>
+</mapper>
+

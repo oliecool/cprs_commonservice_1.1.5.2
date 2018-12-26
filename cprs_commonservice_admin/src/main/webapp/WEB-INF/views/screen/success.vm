@@ -1,0 +1,19 @@
+#set($layout = 'layout/default.vm')
+<script>
+	function sub(url){		
+		$!('#searchForm').attr('action',"$!{appServer}" +url+".htm");
+        $!('#searchForm').submit();
+	}
+</script>
+<form id="searchForm" action=""  method="post">
+	#if($!{query.articalTypeId})
+	<input type="hidden" name="articalTypeId" value="$!{query.articalTypeId}"/>
+	#end
+	#if($!{query.adPositionId})
+	<input type="hidden" name="adPositionId" value="$!{query.adPositionId}"/>
+	#end
+</form>
+<div class="r-success">
+    	<h3>#if($!{message})$!{message}#else 操作成功！#end</h3>
+        <button class="button-s10" type="button" onclick="javascript:#if($!{url})sub('$!{url}')#else history.go(-1)#end">返回</button>
+</div>

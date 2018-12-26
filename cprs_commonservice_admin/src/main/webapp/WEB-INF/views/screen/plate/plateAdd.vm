@@ -1,0 +1,291 @@
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/kindeditor-min-unupload.js"></script>
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/lang/zh_CN.js"></script>
+<script  type="text/javascript">
+
+$(function() {
+     var errorMessage = jQuery("#message").val();
+     if(errorMessage !=null && errorMessage != ""){
+         alert(errorMessage);
+     }
+   });
+  
+  
+  
+   function addSubmit(){
+      if(!validateData()){
+         return false;
+      }
+      
+     return true;
+   }
+
+ 
+ 
+ 
+ function validateData(){
+    if(jQuery("#plateType").val() == ""){
+		   jQuery("#err_plateType").text("地域类型必填项！");
+		   return false ;
+	 }else{
+		  jQuery("#err_plateType").text("*");
+		  
+		  if(jQuery("#plateType").val() == "C"){
+		     if(jQuery("#plateOneSelect").val() == ""){
+		         jQuery("#err_plateOneSelect").text("省份信息必填项！");
+		         return false;
+		     }else{
+		          jQuery("#err_plateOneSelect").text("*");
+		     }
+		  }
+		  
+		  if(jQuery("#plateType").val() == "A"){
+		  
+		     if(jQuery("#plateOneSelect").val() == ""){
+		         jQuery("#err_plateOneSelect").text("省份信息必填项！");
+		         return false;
+		     }else{
+		          jQuery("#err_plateOneSelect").text("*");
+		     }
+		     if(jQuery("#plateTwoSelect").val() == ""){
+		         jQuery("#err_plateTwoSelect").text("市级信息必填项！");
+		         return false;
+		     }else{
+		          jQuery("#err_plateTwoSelect").text("*");
+		     }
+		  
+		  }
+			
+	}
+
+
+
+     if(!checkUniqueCode()){
+         return false;
+     }
+
+     if($.trim(jQuery("#plate").val()) == "" ){
+		   jQuery("#err_plate").text("地域名称必填项！");
+		   return false ;
+	 }else{
+		  jQuery("#err_plate").text("*");
+			
+	}
+
+
+
+	 return true ;
+ 
+   }
+   
+	
+	
+	
+   jQuery(function() {
+		//将省份\市级选项默认隐藏
+		jQuery("tr[name='one_plate_name']").hide();
+		jQuery("tr[name='two_plate_name']").hide();
+      
+   });
+
+
+   //取消按钮
+    function doback(){
+       location.href = "$!{appServer}/plate/plateHelp.htm";
+    }  
+  
+	/**
+	 * 根据功能的不同类型，
+	 * 
+	 * @author jhn
+	 */
+	 
+	 function plateTypeChange(){
+	 
+	 	jQuery("tr[name='one_plate_name']").hide();
+	    jQuery("tr[name='two_plate_name']").hide();
+	   //清除子系统code隐藏域
+		var type = jQuery("#plateType").val();
+		//type=P添加省份，C添加城市 ，A添加区
+		if(type == "P") {
+			jQuery("tr[name='one_plate_name']").hide();
+			jQuery("tr[name='two_plate_name']").hide();
+		} else if(type == "C") {
+			jQuery("tr[name='one_plate_name']").show();
+		}else if(type == "A") {
+			jQuery("tr[name='one_plate_name']").show();
+			jQuery("tr[name='two_plate_name']").show();
+		}
+	 
+	 }
+ 
+	 /**
+	 * 根据省份信息查询市信息
+	 * 
+	 * @author jhn
+	 */
+	function  plateCity(parentId){
+		   if(parentId != '') {
+			 	jQuery.ajax({
+		    		   type:"post",
+		    		   url:appServer + "/ajax/getPlateTypeOfCityTree.json",
+					   dataType:"json",	
+		    		   data:{"parentId":parentId},	
+		    		   success:function(message){
+		    		     var  cityList = message.cityList;
+		    		   	  $('#plateTwoSelect').empty();
+		    		   	  $('#plateTwoSelect').prepend("<option value=''>请选择</option>");
+		    		   	  if(cityList != null) {
+		    		   	  	for(var i=0;i<cityList.length;i++ ) {
+		    		   	  		var plate = cityList[i];
+		    		   	  		$('#plateTwoSelect').append("<option value='" + plate.id + "'>" +plate.plate  + "</option>");
+		    		   	  	}
+		    		   	  }
+		    		   },
+					   error:function(xhr, message, e){
+					      
+					   }
+				   });
+			}
+		
+		}
+
+	/**
+	 * 查询唯一编码
+	 *
+	 * @author jhn
+	 */
+	function checkUniqueCode(){
+	    var status = false;
+        jQuery("#err_plateCode").text("");
+
+	    var plateCode = $.trim($("#plateCode").val());
+	    if(plateCode == null || plateCode == ""){
+            jQuery("#err_plateCode").text("地域编码必须填!");
+            return false;
+		}
+
+        var reg = new RegExp("^[0-9]{0,10}$");
+        if (!reg.test($.trim(jQuery("#plateCode").val()))){
+            jQuery("#err_plateCode").text("地域编码为数字格式，请正确输入!");
+			return false;
+		}
+
+        jQuery.ajax({
+            type:"post",
+            url:appServer + "/ajax/getPlateCodeUnique.json",
+            dataType:"json",
+            async:false,
+            data:{"plateCode":plateCode},
+            success:function(message){
+
+                if(message.message != null) {
+                    jQuery("#err_plateCode").text(message.message);
+
+                }else{
+                    jQuery("#err_plateCode").text("*");
+                    status = true;
+				}
+            },
+            error:function(xhr, message, e){
+                 status =false;
+            }
+        });
+
+	    return status;
+	}
+
+
+
+
+	
+ </script>
+
+<div class="main">
+	<h2>添加地方信息</h2>
+  <form  name="addForm" id="addForm"  action="${appServer}/plate/plateAdd.htm" method="post"   onsubmit="return addSubmit()">
+  <div class="formBox">
+    <div class="content">
+	<h3><i></i><span>添加地方信息</span></h3>
+      <table class="c2">
+		<tr>
+	          <th><span class="red">*</span>地方类型：</th>
+	          <td>
+	              #springBind("plate.plateType")
+	            <select class="select" id="plateType" name="${status.expression}"  onclick="plateTypeChange(this)"  style="width:206px">
+				     #foreach($!key in $!{plateTypeMap.keySet()})
+				         <option value="$!key">$!{plateTypeMap.get($!key)}</option>
+				     #end
+				</select>
+				 <span id="err_plateType" class="red">${status.errorMessage}</span>
+			  </td>
+			  
+        </tr>
+        <tr name="one_plate_name">
+	          <th><span class="red">*</span>所属省份：</th>
+	          <td>
+	            
+	             #springBind("plate.provinceId")
+	            <select class="select" id="plateOneSelect" name="${status.expression}" onChange="plateCity(this.value)" style="width:206px">
+	                 <option value="" >请选择</option>	
+	                 #foreach($item in $!{provinces})
+				         <option value="$!{item.id}" >$!{item.plate}</option>
+				     #end
+				</select>
+				 <span id="err_plateOneSelect" class="red">${status.errorMessage}</span>
+			</td>
+        </tr>
+          <tr name="two_plate_name">
+          <th><span id="twoProName" class="red">*</span>所属市：</th>
+          <td>
+            
+             #springBind("plate.cityId")
+            <select class="select" id="plateTwoSelect" name="${status.expression}" style="width:206px">
+               <option value="" >请选择</option>		
+			</select>
+			 <span id="err_plateTwoSelect" class="red">${status.errorMessage}</span>
+		</td>
+        </tr>
+          <tr>
+              <th><span class="red">*</span>地方编码：</th>
+              <td>
+				  #springBind("plate.plateCode")
+                  <input type="text" class="inp" id="plateCode" name="${status.expression}" value="$!{status.value}" onchange="checkUniqueCode();" maxlength="10"/>
+                  <span id="err_plateCode" class="red">${status.errorMessage}</span>
+              </td>
+
+          </tr>
+        <tr>
+          <th><span class="red">*</span>地域名称：</th>
+          <td>
+			#springBind("plate.plate")
+			<input type="text" class="inp" id="plate" name="${status.expression}" value="$!{status.value}" maxlength="40"/>
+            <span id="err_plate" class="red">${status.errorMessage}</span>
+		  </td>
+        </tr>
+
+		<!--<tr>
+          <th><span  class="red">*</span>是否启用：</th>
+          <td>
+			#springBind("plate.isDelete")
+			<input type="radio" name="${status.expression}" id="radio" value="N" #if($!{plate.isDelete} == "N" || !${plate.isDelete})  checked #end /> <label for="radio">是</label>
+            <input type="radio" name="${status.expression}" id="radio2" value="Y" #if($!{plate.isDelete} == "Y")  checked #end />  <label for="radio2">否</label>
+            <span id="err_radio" class="red">${status.errorMessage}</span>
+		  </td>
+        </tr>-->
+      </table>
+    </div>
+    <div class="form-but">
+      <!-- 表单按钮区 -->
+      <button type="submit" class="button-s4" >保存类目</button>
+	  <button type="button" class="button-s4" onclick="doback();">取消</button>
+    </div>
+    <!-- 表单按钮区 END -->
+    <div class="clear">
+       <input type="hidden" id="message" value="$!{message}"/>
+    </div>
+  </div>
+  </form>
+  <!-- 表单模块 END -->
+  <div class="clear"></div>
+ </div>
+

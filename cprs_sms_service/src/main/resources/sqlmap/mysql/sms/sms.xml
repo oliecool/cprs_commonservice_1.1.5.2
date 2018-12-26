@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.hundsun.cprs.commonservice.sms.dao.SendSmsDAO">
+       
+  <resultMap id="BaseResultMap" type="SendSms" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="SMS_ID" property="smsId" jdbcType="DECIMAL" />
+    <result column="MOBLIE_NO" property="moblieNo" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="IS_TRANSMIT" property="isTransmit" jdbcType="VARCHAR" />
+    <result column="OPERATOR" property="operator" jdbcType="VARCHAR" />
+    <result column="FAIL_REASON" property="failReason" jdbcType="VARCHAR" />
+    <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="GMT_MODIFY" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="SMS_CONTENT" property="smsContent" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="baseColumns" >
+    ID,
+    SMS_ID,
+    MOBLIE_NO,
+    BUSINESS_TYPE,
+    STATUS,
+    IS_TRANSMIT,
+    OPERATOR,
+    FAIL_REASON,
+    GMT_CREATE,
+    GMT_MODIFY,
+    SMS_CONTENT
+  </sql>
+  
+  <sql id="whereClause" >
+     <if test="id !=null and id!='' ">and ID = #{id}</if> 
+     <if test="smsId !=null and smsId!='' ">and SMS_ID = #{smsId}</if> 
+     <if test="moblieNo !=null and moblieNo!='' ">and MOBLIE_NO = #{moblieNo}</if> 
+     <if test="businessType !=null and businessType!='' ">and BUSINESS_TYPE = #{businessType}</if> 
+     <if test="status !=null and status!='' ">and STATUS = #{status}</if> 
+     <if test="isTransmit !=null and isTransmit!='' ">and  IS_TRANSMIT = #{isTransmit}</if> 
+     <if test="operator !=null and operator!='' ">and  OPERATOR = #{operator}</if> 
+     <if test="failReason !=null and failReason!='' ">and   FAIL_REASON = #{failReason}</if> 
+     <if test="gmtCreate !=null">and   GMT_CREATE = #{gmtCreate}</if> 
+     <if test="gmtModify !=null">and   GMT_MODIFY = #{gmtModify}</if> 
+   
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="SendSms" >
+    select <include refid="baseColumns" />
+    from SEND_SMS
+    where ID = #{id}#
+  </select>
+  
+  <select id="selectByQuery" resultMap="BaseResultMap" parameterType="SendSmsQuery" >
+    select <include refid="baseColumns" />
+    from SEND_SMS
+    <where>
+       <include refid="whereClause" />
+    </where>
+  </select>
+  
+  <select id="listSendSms" resultMap="BaseResultMap" parameterType="SendSms" >
+    select <include refid="baseColumns" />
+    from SEND_SMS
+    <where>
+        <include refid="whereClause" />
+    </where>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="SendSms" >
+    delete from SEND_SMS
+    where ID = #{id}
+  </delete>
+  <insert id="insert" parameterType="SendSms">
+    insert into SEND_SMS (<include refid="baseColumns" />)
+    values (0, #{smsId}, #{moblieNo}, #{businessType},
+      #{status}, #{isTransmit}, #{operator}, #{failReason}, now(),
+      now(),#{smsContent})
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="SendSms" >
+    update SEND_SMS
+    set GMT_MODIFY = now()
+    <if test="smsId !=null and smsId!='' ">, SMS_ID = #{smsId}</if> 
+     <if test="moblieNo !=null and moblieNo!='' ">,MOBLIE_NO = #{moblieNo}</if> 
+     <if test="businessType !=null and businessType!='' ">,BUSINESS_TYPE = #{businessType}</if> 
+     <if test="status !=null and status!='' ">,STATUS = #{status}</if> 
+      <if test="isTransmit !=null and isTransmit!='' ">,IS_TRANSMIT = #{isTransmit}</if> 
+     <if test="operator !=null and operator!='' ">,OPERATOR = #{operator}</if> 
+     <if test="failReason !=null and failReason!='' ">,FAIL_REASON = #{failReason}</if> 
+     <if test="gmtCreate !=null">,GMT_CREATE = #{gmtCreate}</if> 
+     <if test="smsContent !=null and smsContent!='' ">,SMS_CONTENT= #{smsContent}</if>
+    where ID = #{id}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="SendSms" >
+    update SEND_SMS
+    set SMS_ID = #{smsId},
+      MOBLIE_NO = #{moblieNo},
+      BUSINESS_TYPE = #{businessType},
+      STATUS = #{status},
+      IS_TRANSMIT = #{isTransmit},
+      OPERATOR = #{operator},
+      FAIL_REASON = #{failReason},
+      GMT_CREATE = #{gmtCreate},
+      GMT_MODIFY = #{gmtModify},
+      SMS_CONTENT = #{smsContent}
+    where ID = #{id}
+  </update>
+	
+	<select id="querySendSmsByPage" resultMap="BaseResultMap" parameterType="com.hundsun.cprs.commonservice.sms.domain.query.SendQuery" >
+	    select <include refid="baseColumns" />
+	    from SEND_SMS
+	    <where>
+	    	1=1
+	        <if test="moblieNo !=null and moblieNo!='' ">and MOBLIE_NO like CONCAT('%',#{moblieNo},'%')</if>
+	        <if test="status !=null and status!='' ">and STATUS = #{status}</if> 
+	    </where>
+	    order by GMT_CREATE desc
+    </select>
+</mapper>
+

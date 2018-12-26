@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hundsun.cprs.commonservice.article.dao.ArticleDao">
+	<resultMap id="BaseResultMap" type="com.hundsun.cprs.commonservice.article.domain.Article" >
+		<result column="ID" property="id" jdbcType="DECIMAL" />
+		<result column="articleType_Id" property="articalTypeId" jdbcType="DECIMAL" />
+		<result column="article_code" property="articleCode" jdbcType="VARCHAR" />
+		<result column="article_name" property="articleName" jdbcType="VARCHAR" />
+		<result column="article_remark" property="articleRemark" jdbcType="VARCHAR" />
+		<result column="article_text" property="articleText" jdbcType="VARCHAR" />
+		<result column="logo_Image_Url" property="logoImageUrl" jdbcType="VARCHAR" />
+		<result column="article_author" property="articleAuthor" jdbcType="VARCHAR" />
+		<result column="is_publish" property="isPublish" jdbcType="VARCHAR" />
+		<result column="orders" property="orders" jdbcType="DECIMAL" />
+		<result column="definy_Type" property="definyType" jdbcType="VARCHAR" />
+		<result column="publishDate" property="publishDate" jdbcType="TIMESTAMP" />
+		<result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<resultMap id="ExtResultMap" extends="BaseResultMap" type="com.hundsun.cprs.commonservice.article.dto.ArticleInfo">
+		<result property="articleTypeName" column="articleType_name" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="baseColumns" >
+    articleType_Id,
+    article_code,
+    article_name,
+    article_remark,
+    article_text,
+    logo_Image_Url,
+    article_author,
+    is_publish,
+    orders,
+    definy_Type,
+    publishDate,
+    gmt_create,
+    gmt_modify
+  </sql>
+
+	<insert id="createArticle" parameterType="com.hundsun.cprs.commonservice.article.domain.Article">
+		insert into trade_article (<include refid="baseColumns" />)
+		values(#{articalTypeId},#{articleCode},#{articleName},#{articleRemark},#{articleText},#{logoImageUrl},#{articleAuthor},#{isPublish},#{orders},#{definyType},now(),now(),now())
+	</insert>
+
+	<select id="selectArticleByPage" resultMap="ExtResultMap">
+		select ta.* ,tat.articleType_name from trade_article ta left join trade_article_type tat on ta.articleType_Id=tat.id
+		<where>
+			<if test="articleName != null and articleName != ''">AND ta.article_name like CONCAT('%',#{articleName},'%')</if>
+			<if test="articleCode != null and articleCode != ''"> AND  ta.article_code=#{articleCode}</if>
+			<if test="articalTypeId != null"> AND  ta.articleType_Id=#{articalTypeId}</if>
+			<if test="isPublish != null and isPublish != ''"> AND  ta.is_publish=#{isPublish}</if>
+		</where>
+		order by ta.GMT_CREATE desc
+	</select>
+
+	<delete id="deleteArticle" parameterType="java.lang.Long">
+		delete from trade_article
+		where id=#{articleId}
+	</delete>
+
+	<update id="editArticle" parameterType="com.hundsun.cprs.commonservice.article.domain.Article">
+		update trade_article
+		<set>
+			gmt_modify=now(), article_code=#{articleCode}
+			<if test="articalTypeId != null">, articleType_Id=#{articalTypeId}</if>
+			<if test="articleName != null and articleName != ''"> , article_name=#{articleName}</if>
+			<if test="articleRemark!= null and articleRemark != ''"> , article_remark=#{articleRemark}</if>
+			<if test="articleText != null and articleText != ''"> ,  article_text=#{articleText}</if>
+			<if test="logoImageUrl != null and logoImageUrl != ''"> ,  logo_Image_Url=#{logoImageUrl}</if>
+			<if test="articleAuthor != null and articleAuthor != ''">, article_author=#{articleAuthor}</if>
+			<if test="isPublish != null and isPublish != ''"> , is_publish=#{isPublish}</if>
+			<if test="orders != null"> , orders=#{orders}</if>
+			<if test="publishDate != null"> ,  publishDate=now()</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<select id="selectArticleById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * from trade_article
+		where id=#{articleId}
+	</select>
+
+	<select id="selectArticleBycode" resultMap="BaseResultMap" parameterType="com.hundsun.cprs.commonservice.article.domain.Article">
+		select * from trade_article
+		<where>
+			1=1
+			<if test="id != null">AND id=#{id}</if>
+			<if test="articleCode != null and articleCode != ''"> AND  article_code=#{articleCode}</if>
+			<if test="isPublish != null and isPublish != ''"> AND  is_publish=#{isPublish}</if>
+		</where>
+	</select>
+
+	<select id="selectArticleListByArticleTypecode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from trade_article ta left join trade_article_type tat on ta.articleType_Id=tat.id
+		where tat.articleType_code=#{code}
+	</select>
+
+	<select id="getArticleListByTypeCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from trade_article ta left join trade_article_type tat on ta.articleType_Id=tat.id
+		where tat.articleType_code=#{code} and ta.is_publish="Y"
+		order by ta.orders
+	</select>
+
+	<select id="selectArticleByOrderAndTypeId" resultMap="BaseResultMap">
+		select * from trade_article
+		where orders=#{orders} and articleType_Id=#{articleTypeId}
+	</select>
+</mapper>
+

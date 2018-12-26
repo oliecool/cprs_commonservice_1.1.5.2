@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<bean name="commonQuartzScheduler"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSourceQuartz" />
+		</property>
+		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
+		<property name="configLocation" value="classpath:task/quartz.properties" />
+		<property name="triggers">
+			<list>
+	   	 		<ref bean="dailyInitTrigger"/>
+			</list>
+		</property>
+		
+	</bean>
+	
+	
+	<!--日初定时处理  获取短信令牌-->           
+	<bean id="dailyInitTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail"><ref bean="dailyInitTask"/></property>
+		<property name="cronExpression"><value>0 10 5 * * ?</value></property>
+	</bean>
+	<bean id="dailyInitTask" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+	     <property name="jobClass">
+			<value>frameworkx.springframework.scheduling.quartz.MyDetailQuartzJobBean
+			</value>
+		</property>
+	     <!-- durability 表示任务完成之后是否依然保留到数据库，默认false -->
+		 <property name="durability" value="true" />
+	     <property name="requestsRecovery" value="true" /> 
+        <property name="jobDataAsMap">
+			<map>
+				<entry key="targetObject" value="dailyInit" /> 
+ 				<entry key="targetMethod" value="dailyInit" />
+			</map>
+		</property>
+
+	</bean>
+	
+
+	
+</beans>

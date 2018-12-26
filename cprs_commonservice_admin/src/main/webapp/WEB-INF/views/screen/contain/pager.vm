@@ -1,0 +1,48 @@
+################################################################################
+## 通用分页vm
+## 传入的分页数据参数必须使用"page"作为参数名, 并且仅支持这一个参数
+##
+## author: zhengdd
+## date: 2010-3-31
+## param: page 分页数据参数, 必须
+## param: form 页面查询条件的表单id, 可选
+## param: action 分页查询提交的action, 可选
+## param: expression 跳转页面页数的hidden对象, 可选
+################################################################################
+#set($layout = 'layout/blank.vm')
+
+<div class="pages-box" >
+<div class="pages">
+#if($!{page} && $!{page.totalCount} > 0)
+	<script type="text/javascript">
+	_data = jQuery.trim("$!{data}");
+	_form = jQuery.trim("$!{form}");
+	_action = jQuery.trim("$!{action}");
+	_expression = jQuery.trim("$!{expression}");
+    </script>
+    <div id="_page">
+		<input type="hidden" id="_total_page" value="$!{page.totalPage}" />
+		总记录数: [ $!{page.totalCount} ]&nbsp;
+        #if(!$!{page.firstPage})
+			<a id="_pre_page" href="#" style="font-weight:bold">&laquo;</a>
+			<input type="hidden" value="$!{page.prePage}" />
+		#else
+			<a id="_none_pre_page" href="#" style="font-weight:bold">&laquo;</a>
+		#end
+		#foreach($p in [$page.beginPage..$page.endPage])
+        	#if($!{page.pageNo} != ${p})<a id="_page_no" href="#">$!{p}</a>#else<b> $!{p} </b>#end
+        #end
+        #if(!$!{page.lastPage})
+			<a id="_next_page" href="#" style="font-weight:bold">&raquo;</a>
+			<input type="hidden" value="$!{page.nextPage}" />
+		#else
+			<a id="_none_next_page" href="#" style="font-weight:bold">&raquo;</a>
+		#end
+		<input id="_go_page" type="text" size="2" title="输入页码按回车" maxlength="4" /><a id="_go" href="#" style="color:#000">GO</a>
+		页数: [  $!{page.pageNo} / $!{page.totalPage} ]
+    </div>
+#else
+	没有结果
+#end
+</div>
+</div>

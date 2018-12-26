@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hundsun.cprs.commonservice.advertisement.dao.AdPositionTypeDao">
+	<resultMap id="BaseResultMap" type="com.hundsun.cprs.commonservice.advertisement.domain.AdPositionType" >
+		<result column="ID" property="id" jdbcType="DECIMAL" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="definy_Type" property="definyType" jdbcType="VARCHAR" />
+		<result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="GMT_MODIFIED" property="gmtModify" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="baseColumns" >
+    name,
+    code,
+    description,
+    definy_Type,
+    GMT_CREATE,
+    GMT_MODIFIED
+  </sql>
+
+	<insert id="createAdPositionType" parameterType="com.hundsun.cprs.commonservice.advertisement.domain.AdPositionType">
+		insert into commonservice_adPositiontype (<include refid="baseColumns" />)
+		values(#{name},#{code},#{description},#{definyType},now(),now())
+	</insert>
+
+	<select id="queryByPage" resultMap="BaseResultMap">
+		select * from commonservice_adPositiontype
+		<where>
+			1=1
+			<if test="name != null and name != ''">AND name like CONCAT('%',#{name},'%')</if>
+			<if test="code != null and code != ''"> AND  code=#{code}</if>
+		</where>
+		order by GMT_CREATE desc
+	</select>
+
+	<delete id="deleteAdPositionType" parameterType="java.lang.Long">
+		delete from commonservice_adPositiontype
+		where id=#{id}
+
+	</delete>
+
+	<update id="editAdPositionType" parameterType="com.hundsun.cprs.commonservice.advertisement.domain.AdPositionType">
+		update commonservice_adPositiontype
+		<set>
+			GMT_MODIFIED=now() , description=#{description}
+			<if test="name != null and name != ''">, name=#{name}</if>
+			<if test="code != null and code != ''"> , code=#{code}</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<select id="selectAdPositionTypeById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * from commonservice_adPositiontype
+		where id=#{id}
+	</select>
+
+	<select id="selectAdPositionTypeList" resultMap="BaseResultMap">
+		select * from commonservice_adPositiontype
+	</select>
+
+	<select id="selectAdPositionTypeByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from commonservice_adPositiontype
+		where code=#{code}
+	</select>
+</mapper>
+

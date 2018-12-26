@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="GB2312"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd 
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<bean id="userPermissionFilterBean" class="com.hundsun.eclp.client.filter.UserPermissionFilter">
+        <property name="remoteUserService" ref="remotingClient"></property>
+        <property name="currentSystemCode" value="${subsystemCode}"></property>
+        <property name="plantformLoginUrl" value="${plantformLoginUrl}"></property>
+        <property name="agentName" value="userAgent"></property>
+        <property name="agentClass" value="com.hundsun.network.eclp.ex.common.UserAgent"></property>
+        <property name="excludedUrl">
+        	<!-- 不需要登录即可访问的url -->
+			<list>
+				<value>/remoting/test/</value>
+			</list>
+		</property>
+    </bean>
+    <bean id="imageUploadUtil" class="com.hundsun.cprs.commonservice.advertisement.common.util.FileUploadUtil">
+		<property name="uploadRoot" value="${upload.images.root}"/>
+	</bean>
+</beans>

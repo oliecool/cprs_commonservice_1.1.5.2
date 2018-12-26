@@ -1,0 +1,122 @@
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/kindeditor-min-unupload.js"></script>
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/lang/zh_CN.js"></script>
+<script src="$!{appServer}/scripts/article/article.js" type="text/javascript"></script>
+<script src="$!{appServer}/scripts/ajax/ajaxfileupload.js" type="text/javascript"></script>
+<script type="text/javascript" src="$!{appServer}/scripts/My97DatePicker/WdatePicker.js"></script>
+<link rel="stylesheet" href="$!{appServer}/styles/upload.css" type="text/css" />
+<div class="main">
+    <form id="searchForm" action="$!{appServer}/article/edit.htm" method="post"  enctype="multipart/form-data">
+        <h2>修改文章</h2>
+        <div id="addTypeForm" class="formBox">
+            <div class="div-1">
+                <div class="content">
+                    <table class="c5" style="width:90%;">
+                        <tr>
+                            <th><span style="color:red">*</span>标题：</th>
+                            <td colspan="5">
+                                <input type="hidden" id="articleId" name="id" value="$!{article.id}"/>
+                                <input type="hidden" id="articleTypeId" name="oldArticleTypeId" value="$!{article.articalTypeId}"/>
+                                <input type="text" id="title" name="articleName" maxlength="25" style="width:80%;" value="$!{article.articleName}" onkeyup="this.value=this.value.replace(/\s+/g,'')"/>
+                                <span id="titleInfo" style="color:red"></span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <input type="hidden" id="oldCode" name="articleCode"  value="$!article.articleCode">
+                            <!--<th>编号：</th>
+				            	<td colspan="2">
+				            		<input type="hidden" id="oldCode" value="$!article.articleCode">
+					            	<input type="code" id="code" name="articleCode" maxlength="15" value="$!{article.articleCode}" onchange="checkCode(this.value)" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"/>
+				            		<span id="codeInfo" style="color:red"></span>
+				            	</td>-->
+                            <th><span style="color:red">*</span>所属分类：</th>
+                            <td colspan="2">
+                                <select id="articalTypeId" name="articalTypeId" style="width:135px;" onchange="checkOrders()">
+                                    <option value="" >请选择</option>
+									#foreach($item in $articleTypeList)
+                                        <option value="$!{item.Id}" #if($!{article.articalTypeId} == $!{item.id}) selected #end>$!{item.articleTypeName}</option>
+									#end
+                                </select>
+                                <span id="articalTypeIdInfo" style="color:red"></span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th><span style="color:red">*</span>作者：</th>
+                            <td colspan="2">
+                                <input type="text" id="articleAuthor" name="articleAuthor" maxlength="15" value="$!{article.articleAuthor}"/>
+                                <span id="articleAuthorInfo" style="color:red"></span>
+                            </td>
+
+                            <th><span style="color:red">*</span>排序号：</th>
+                            <td colspan="2">
+                                <input type="hidden" id="oldOrdcer" value="$!{article.orders}">
+                                <input type="text" id="orders" name="orders" maxlength="6" value="$!{article.orders}" onchange="checkOrders()" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
+                                <span id="ordersInfo" style="color:red"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><span style="color:red">*</span>文章简介：</th>
+                            <td colspan="5">
+                                <textarea  id="articleRemark" name="articleRemark"  maxlength="200"   style="width:80%;height:60px;" placeholder="简介内容不超过200字">$!{article.articleRemark}</textarea>
+                                <span id="articleRemarkInfo" style="color:red"></span>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th><span style="color:red">*</span>图片：</th>
+                            <td colspan="2">
+                                <a href="javascript:;" class="a-upload">
+                                    <input type="file" id="uploadFile" name="file" onchange="uploadLogo()">点击这里上传logo
+                                    <span id="fileInfo"></span>
+                                </a>
+                                <span id="uploadFileInfo" style="color:red"></span>
+                            </td>
+                            <th id="fileImageTile"><span style="color:red">*</span>logo缩略图：</th>
+                            <td id="fileImage">
+                                <a href="javascript:;">
+                                    <img src="${imageServer}/$!{article.logoImageUrl}">
+                                </a>
+                            </td>
+                            #*<th>压缩图：</th>
+                            <td><img alt="" src="$!{imageServer}/$!{article.logoImageUrl}" style="height:60px;"/></td>*#
+                        </tr>
+
+					##<tr>
+					##<th><span style="color:red">*</span>开始时间：</th>
+					##<td colspan="2">
+					##<input type="text" id="listingStartTime" name="beginDate" class="date-pick" value="$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{article.beginDate})}" style="width:130px;height:16px"   onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'%y-%M-%d',maxDate:'#F{$dp.$D(\'listingEndTime\')}'})"  readonly />
+					##<span id="beginDateInfo" style="color:red"></span>
+					##</td>
+
+					##<th><span style="color:red">*</span>结束时间：</th>
+					##<td colspan="2">
+					##<input type="text" id="listingEndTime" name="endDate" class="date-pick" value="$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{article.endDate})}" style="width:130px;height:16px"   onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'#F{$dp.$D(\'listingStartTime\')}'})"  readonly />
+					##<span id="endDateInfo" style="color:red"></span>
+					##</td>
+					##</tr>
+
+                        <tr id="kinderEdit">
+                            <th><span style="color:red">*</span>内容：</th>
+                            <td colspan="5">
+				            		<textarea  id="articleText" name="articleText" style="width:77%;height:260px;" maxlength="20000"  >
+										$!{article.articleText}
+                                    </textarea>
+                                <br>
+                                您当前输入了 <span class="word_count2">0</span>个文字, <span class="word_surplus"></span>
+                                <span id="contentInfo" style="color:red"></span>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="form-but"><!-- 表单按钮区 -->
+
+            <input type="button" value="保存" onclick="edit('update')" id="saveIdentityId"  class="button-s4"/>
+
+            <input type="button" id="back" name="back" class="button-s4" value="返回" onclick="JavaScript:history.forward()">
+        </div>
+    </form>
+</div>

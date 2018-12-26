@@ -1,0 +1,69 @@
+#set($layout = 'layout/default.vm')
+<script src="$!{appServer}/scripts/ajaxfileupload.js" type="text/javascript"></script>
+<script>
+	$(function(){
+     var errorMessage = jQuery("#message").val();
+     if(errorMessage !=null && errorMessage != ""){
+         alert(errorMessage);
+     }
+  
+	   window.parent.frames.listleft.location.reload();
+	});
+	
+	
+	function importTXT() {
+		if ($("#attachmentFile").val() == '') {
+			alert("未选择文件！");
+			return;
+		}
+		
+     $.ajaxFileUpload({
+			url : '$!appServer/plate/insertData.json', //用于文件上传的服务器端请求地址
+			secureuri : false, //是否需要安全协议，一般设置为false
+            fileElementId : 'attachmentFile', //文件上传域的ID
+            data : {
+            },
+            dataType : 'json', //返回值类型 一般设置为json
+            success : function(result) {
+                 alert(result.message);
+                 window.parent.frames.listleft.location.reload();
+            },
+            error: function (data, status, e){
+            	
+            }
+		});
+		
+	}
+	
+	
+</script>
+<body>
+    <div class="main">
+        <h2>地域信息管理帮助</h2>
+        
+    	<p class="edit"><img style="vertical-align:middle;" src="$!{appServer}/images/admin/role_add.gif" title="新增"/>：点击可以新增省市区信息</p>
+		<br/>
+    	<p class="edit"><img style="vertical-align:middle;" src="$!{appServer}/images/admin/role_edit.gif" title="编辑"/>：点击可编辑省市区信息</p>
+		<br/>
+		##<p class="edit"><img style="vertical-align:middle;" src="$!{appServer}/images/admin/ico_accept.png" title="启用"/>：点击可将所有禁用的一级或者二级类目录直接启用</p>
+		##<br/>
+		##<p class="edit"><img style="vertical-align:middle;" src="$!{appServer}/images/admin/ico_delete.png" title="禁用"/>：点击可将所有启用的一级或者二级类目录直接禁用</p>
+		##</br>
+    	<p class="edit"><img style="vertical-align:middle;" src="$!{appServer}/images/admin/remove.png" title="删除"/>：点击可将省市区信息删除，如果删除省份信息，所属的市级及市级下的区级信息会被删除,
+    	点击可将市级信息删除，所属的区级信息会被删除，也可删除区级信息</p>
+		<br/><br/>
+		<p class="upload">导入现有地域信息：
+		   <input type="file"  id="attachmentFile" name="attachmentFile" style="width:150px;"/>
+		   <input type="button" class="button-s4" value="导入地域文件"  onclick="importTXT();" ></button>
+		  <input type="button" class="button-s4"  value="下载地域文件"  onclick="location.href='$!{appServer}/plate/downloadImportExcel.htm' "></button>
+		</p>
+		<br/><br/>
+        <div class="clear"></div>
+    </div>
+    
+    <!-- 表单模块 END -->
+   <div class="clear"></div>
+      	<input type="hidden" id="message" name="${status.expression}" value="$!{message}"/>
+   </div>
+    
+</body>

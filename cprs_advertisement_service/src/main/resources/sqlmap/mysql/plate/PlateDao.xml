@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.hundsun.cprs.commonservice.plate.dao.PlateDao">
+  <resultMap id="BaseResultMap" type="com.hundsun.cprs.commonservice.plate.domain.Plate" >
+    <result column="ID" property="id"  />
+	  <result column="plate_code" property="plateCode" />
+    <result column="plate" property="plate" />
+    <result column="parent_Id" property="parentId" />
+     <result column="parent_name" property="parentName" />
+    <result column="plate_type" property="plateType" />
+    <result column="is_delete" property="isDelete" />
+    <result column="gmt_create" property="gmtCreate" />
+    <result column="gmt_modify" property="gmtModify"/>    
+  </resultMap>
+  
+  <sql id="baseColumns" >
+    id,plate_code,plate, parent_Id,plate_type,is_delete,gmt_create,gmt_modify
+  </sql>
+  
+  <insert id="insert" parameterType="com.hundsun.cprs.commonservice.plate.domain.Plate" keyProperty="id" useGeneratedKeys="true">
+    	insert into commons_plate (<include refid="baseColumns" />)
+    	values(0,#{plateCode},#{plate},#{parentId},#{plateType},#{isDelete},now(),now())
+   </insert>
+  
+	<update id="update" parameterType="com.hundsun.cprs.commonservice.plate.domain.Plate">
+		update commons_plate
+		<set>
+			gmt_modify=now()
+		   <if test="plate != null and plate != ''"> ,plate=#{plate}</if>	
+		   <if test="parentId != null and parentId != ''"> , parent_Id=#{parentId}</if>	
+		   <if test="plateType != null and plateType != ''">, plate_type=#{plateType}</if>
+		   <if test="isDelete != null and isDelete != ''"> ,is_delete=#{isDelete}</if>	
+		</set>
+		where id=#{id}
+	</update>
+	
+	
+	<update id="delete" parameterType="com.hundsun.cprs.commonservice.plate.domain.Plate">
+		update commons_plate
+		<set>
+			gmt_modify=now(), is_delete=#{isDelete}
+		</set>
+		where (id=#{id} or parent_id=#{id})
+	</update>
+	
+	<select id="getPlate"   resultMap="BaseResultMap">
+	    	select cp1.id,cp1.plate_Code,cp1.plate,cp1.parent_Id,cp2.plate parent_name,cp1.plate_type,cp1.is_delete,cp1.gmt_create,cp1.gmt_modify  from commons_plate cp1
+	    	inner join commons_plate cp2 on (cp2.id= cp1.parent_id or cp1.parent_id=0)
+		    <where>  
+		       <if test="id != null and id != ''"> and cp1.id = #{id}</if>
+                <if test="plateCode != null and plateCode != ''"> and cp1.plate_Code=#{plateCode}</if>
+                <if test="plateType != null and plateType != ''"> and cp1.plate_type=#{plateType}</if>
+		       <if test="isDelete != null and isDelete != ''"> and  cp1.is_delete=#{isDelete}</if>	
+		   </where>
+		   GROUP BY id,parent_id
+	</select>
+	
+	<select id="getPlates"   resultMap="BaseResultMap">
+	    	select id,plate_code,plate,parent_Id,plate_type,is_delete,gmt_create,gmt_modify  from commons_plate
+		    <where>  
+		       <if test="plateType != null and plateType != ''"> and plate_type=#{plateType}</if>	
+		       <if test="isDelete != null and isDelete != ''"> and  is_delete=#{isDelete}</if>	
+		   </where>
+	</select>
+	
+	<select id="getPlatesByPorC"   resultMap="BaseResultMap">
+	    	select id,plate_code,plate,parent_Id,plate_type,is_delete,gmt_create,gmt_modify  from commons_plate
+		    <where>  
+		       <if test="parentId != null and  parentId != ''"> and parent_Id=#{parentId}</if>	
+		       <if test="isDelete != null and isDelete != ''"> and  is_delete=#{isDelete}</if>	
+		   </where>
+	</select>
+	
+	<select id="getProvinces"   resultMap="BaseResultMap">
+	    	select id,plate_code,plate,parent_Id,plate_type,is_delete,gmt_create,gmt_modify  from commons_plate
+		    <where>  
+		      (parent_Id is null	or parent_id = 0)  
+		       <if test="isDelete != null and isDelete != ''"> and  is_delete=#{isDelete}</if>	
+		   </where>
+	</select>
+	
+</mapper>
+

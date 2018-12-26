@@ -1,0 +1,102 @@
+<script>
+	function view(id){
+		window.location.href=appServer+"/smsModel/view.htm?id="+id;
+	}
+	function edit(id){
+		window.location.href=appServer+"/smsModel/edit.htm?id="+id;
+	}
+	function del(id){
+		if(confirm("确认删除？")){
+			window.location.href=appServer+"/smsModel/delete.htm?id="+id;
+		}
+	}
+	function add(){
+		window.location.href=appServer+"/smsModel/add.htm";
+	}
+	//去除搜索框输入内容的首尾空格
+	function change(obj,id){
+		var value=obj.trim();
+		$("#"+id).val(value);
+	}
+</script>
+<div class="main">
+	<form id="searchForm" action="$!{appServer}/smsModel/list.htm" method="post" >
+		<div class="searchBox" style="width:100%">
+				<h5><span>搜索</span></h5>
+	    		<table>
+					<tr>
+						<th>短信类型：</th>
+		                <td>
+		                	#springBind("query.smsType")
+		                	<input type="text" id="type" name="${status.expression}" value="$!{status.value}" onchange="change(this.value,'type')"/>
+		                 </td>
+		                 <td>&nbsp;&nbsp;</td>	
+						<th>短信编码：</th>
+		                <td>
+		                	#springBind("query.smsCode")
+		                	<input type="text" id="code" name="${status.expression}" value="$!{status.value}" onchange="change(this.value,'code')"/>
+		                 </td>
+		                 <td>&nbsp;&nbsp;</td>
+			        	
+			        	<th>状态:</th>
+			        	<td>
+			        		#springBind("query.status")
+			        		<select id="type" name="${status.expression}" style="width:135px;">
+				    				<option value="" >请选择</option>	
+				    			#foreach($item in $!EnumSmsModelStatusMap)
+				    				<option value="$!{item.value}" #if($!{status.value} == $!{item.value}) selected #end>$!{item.name}</option>	
+				    			#end
+							</select>
+			            <td>
+			            <td>&nbsp;&nbsp;</td>			           
+			            <td>
+			                <input type="submit" name="Submit" value="搜索" class="btn"/>&nbsp;&nbsp;<input type="button" value="清空" class="btn" id="clearInput"/>
+			            </td>
+			        </tr>
+				</table>
+		</div>
+    </form>
+	<div class="tool">
+		 <button type="button" class="btn" align="right" onclick="add()">新建模板</button>
+	</div>
+		<div class="listBox">
+		<h5><span>短信模板列表</span></h5>
+		<table style="width:100%; vertical-align: middle;text-align: center;">
+			<tr>
+				<th style="vertical-align: middle !important;text-align: center;">短信类型</td>
+				<th style="vertical-align: middle !important;text-align: center;">短信编码</th>				
+				<th style="vertical-align: middle !important;text-align: center;">状态</td>
+	    		<th style="vertical-align: middle !important;text-align: center;">模板内容</th>
+				<th style="vertical-align: middle !important;text-align: center;">创建时间</th>
+				<th style="vertical-align: middle !important;text-align: center;">修改时间</th>
+				<th style="vertical-align: middle !important;text-align: center;">操作</th>
+	        </tr>
+	        #if($!{query} && ${query.totalCount} > 0)
+	            #foreach($record in ${query.getData()})
+	                <tr #if($!{velocityCount} % 2 == 0) class="bg" #end>					
+						<td><a href="#" onclick="view(${record.id})">$!{record.smsType}</a></td>
+						<td>$!{record.smsCode}</td>
+						<td>$!EnumSmsModelStatusMap.get($!{record.status}).name</td>
+						#if($!{stringUtils.substring($!{record.smsContent},30,31)}=="")
+							<td>$!{record.smsContent}</td>
+						#else
+	            			<td>$!{stringUtils.substring($!{record.smsContent},0,30)}.........</td>
+	            		#end
+	            		<td>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{record.gmtCreate})}</td>
+	            		<td>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{record.gmtModify})}</td>
+	            		<td>
+	            			<a href="#" onclick="edit(${record.id})">编辑</a>
+	            			<a href="#" onclick="del(${record.id})">删除</a>
+	            			<a href="#" onclick="view(${record.id})">详情</a>
+	            		</td>
+	                </tr>
+	            #end            
+	        #end
+        </table>
+		<div class="pages-box" >
+			<div class="pages">
+				#pager($!{query},'searchForm')
+            </div> 
+         </div>
+	</div>
+</div>

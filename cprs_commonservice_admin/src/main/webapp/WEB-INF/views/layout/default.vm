@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	##$contain.get('/contain/htmlhead.htm').put('title',$title)
+	<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>$!{title}</title>
+        <link rel="stylesheet" href="$!{appServer}/styles/basic.css" type="text/css">
+        <link rel="stylesheet" href="$!{appServer}/styles/admin.css" type="text/css">
+		<link rel="stylesheet" href="$!{appServer}/styles/skin-one.css" type="text/css">
+        <link rel="stylesheet" href="$!{appServer}/styles/jquery/jquery-ui.css" type="text/css" />
+        <link rel="stylesheet" href="$!{appServer}/styles/jquery/jquery.ui.theme.css" type="text/css" />
+        <script src="$!{appServer}/scripts/jquery.js" type="text/javascript"></script>
+		<script src="$!{appServer}/scripts/jquery.custom.js" type="text/javascript"></script>
+        <script src="$!{appServer}/scripts/jquery-1.10.4/jquery-1.9.1.js" type="text/javascript"></script>
+		<script src="$!{appServer}/scripts/jquery-1.10.4/jquery-migrate-1.1.0.js" type="text/javascript"></script>
+		<script src="$!{appServer}/scripts/jquery-1.10.4/jquery-ui-1.10.4.js" type="text/javascript"></script>
+		<script src="$!{appServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+        <script src="$!{appServer}/scripts/common.js" type="text/javascript"></script>
+        ##<script src="$!{appServer}/scripts/bussinessCommon.js" type="text/javascript"></script>
+        <script src="$!{appServer}/scripts/form_clear.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			function cleanMsg(){
+        		var inputs=document.getElementsByTagName("input");
+                for(var i=0;inputs!=null&&i<inputs.length;i++){
+                    if(inputs[i].type.toLowerCase()=="text"){
+                       inputs[i].value="";
+                     }
+				 }
+				 
+				 var selects=document.getElementsByTagName("select");
+                for(var i=0;selects!=null&&i<selects.length;i++){
+                     selects[i].selectedIndex=0;
+                 }
+        	}
+			//验证搜索条件中起始时间小于结束时间
+	function checkDate(startDate,endDate){
+	var dateStart=document.getElementById(startDate).value.replace(/-/g, "/");
+	var dateEnd=document.getElementById(endDate).value.replace(/-/g, "/");
+
+
+	if(dateStart=="" || dateEnd==""){
+		return true;
+	}
+
+	var b_date=new Date(Date.parse(dateStart));
+	var e_date=new Date(Date.parse(dateEnd));
+
+    if(dateStart!=""&&dateEnd!=""&&e_date < b_date){
+    	alert("开始时间不能大于结束时间！");
+    	return false;
+    }
+
+    var s_date=e_date - b_date;
+	var day_date=(((s_date/1000)/24)/60)/60
+	if(day_date>30 ){
+    	alert("时间段不可大于30天！");
+    	return false;
+		}
+		return true;
+
+	}
+		</script>
+        <script >
+          var appServer = "$!{appServer}";
+          var imageServer = "$!{imageServer}";
+          var clientServer="$!{clientServer}";
+          var uploadServer="$!{uploadServer}";
+        </script>
+    </head>
+	<body>
+	<!--<span class="" >$!{ipTools.getServerIp()}</span>-->
+		$screen_content
+	</body>
+</html>

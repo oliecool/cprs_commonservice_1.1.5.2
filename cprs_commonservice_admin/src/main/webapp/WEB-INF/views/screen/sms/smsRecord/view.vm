@@ -1,0 +1,46 @@
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/kindeditor-min-unupload.js"></script>
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/lang/zh_CN.js"></script>
+<div class="main">
+    <form id="searchForm">
+    <h2>短信详情</h2>
+	<div id="addTypeForm" class="formBox">
+			<div class="div-1">
+	            <div class="content">
+	            		<table class="c2" style="width:90%;">
+			             	<tr>
+				            	<th><span style="color:red">*</span>接收人：</th>
+				            	<td>
+				            		<span>$!sendSms.moblieNo</span>				           		
+				            	</td>				            	
+				            </tr>	
+				            <tr>
+				            	<th><span style="color:red">*</span>状态：</th>
+				            	<td>
+				            		<span>$!EnumSendSmsStatusMap.get($!{sendSms.status}).name</span>
+				            	</td>
+				            </tr>			            				            				            
+				            <tr>
+					             <th><span style="color:red">*</span>创建时间：</th>
+					             <td>
+					             	<span>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{sendSms.gmtCreate})}</span>
+					             </td>					            
+				            </tr>				            
+				            <tr>
+				            	<th><span style="color:red">*</span>内容：</th>
+				            	<td colspan="2">
+				            		<span>
+					            		##<div class="details">
+											#direct($!{sendSms.smsContent})
+							            ##</div>	
+						            </span>			            		
+				            	</td>
+				            </tr>				           			            				            				         				         
+	        			</table>	        	
+	        		</div>
+				</div>
+	        		</div>
+	        		<div class="form-but"><!-- 表单按钮区 -->	   		           
+		            <input type="button" id="back" name="back" class="button-s4" value="返回" onclick="location.href='/smsRecord/list.htm'">
+		        </div>
+			    </form>
+		    </div>

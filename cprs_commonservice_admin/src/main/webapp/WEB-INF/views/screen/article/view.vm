@@ -1,0 +1,118 @@
+
+<style type="text/css">
+    .textarea {
+        width: 100%;
+        min-height: 300px;
+        max-height: 300px;
+        margin-left: 0px;
+        margin-right: auto;
+        padding: 3px;
+        outline: 0;
+        border: 1px solid #a0b3d6;
+        font-size: 12px;
+        line-height: 24px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border-color: rgba(82, 168, 236, 0.8);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+    }
+
+
+    .formBox .c2 .textarea, .formBox .c7 .textarea{
+        width: 100%;
+    }
+</style>
+
+<div class="main">
+    <form id="searchForm">
+        <h2>文章详情</h2>
+        <div id="addTypeForm" class="formBox">
+            <div class="div-1">
+                <div class="content">
+                    <table class="c2" style="width:90%;">
+                        <tr>
+                            <th>标题：</th>
+                            <td colspan="5">
+                                <span>$!article.articleName</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>编号：</th>
+                            <td colspan="2">
+                                <span>$!article.articleCode</span>
+                            </td>
+                            <th>所属分类：</th>
+                            <td colspan="2">
+                                <span>$!articleType.articleTypeName</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>作者：</th>
+                            <td colspan="2">
+                                <span>$!article.articleAuthor</span>
+                            </td>
+                            <th>排序号：</th>
+                            <td colspan="2">
+                                <span>$!article.orders</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>发布状态：</th>
+                            <td colspan="2">
+                                <span>$!EnumArticleStatusMap.get($!{article.isPublish}).value</span>
+                            </td>
+                            <th>发布时间：</th>
+                            <td colspan="2">
+                                <span>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{article.publishDate})}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>创建时间：</th>
+                            <td colspan="2">
+                                <span>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{article.gmtCreate})}</span>
+                            </td>
+
+                            <th>修改时间：</th>
+                            <td colspan="2">
+                                <span>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{article.gmtModify})}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>简介：</th>
+                            <td colspan="4">
+                                <!-- <span style="margin-left:-45px;">简介：</span> -->
+								<textarea  maxlength="200" style="width:100%;height:60px;" readonly>$!{article.articleRemark}</textarea>								
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>图片：</th>
+                            <td>
+                               <!--  <span style="margin-left:-45px;">图片：</span> -->
+                                <img alt="" src="$!{imageServer}/$!{article.logoImageUrl}" style="height:60px;"/>
+                            </td>
+                        </tr>
+                        <tr id="kinderEdit">
+                            <th></th>
+                            <td colspan="4">
+                                <span style="margin-left:-45px;">内容：</span>
+                                <div class="textarea" >
+
+									#direct($!{article.articleText})
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="form-but"><!-- 表单按钮区 -->
+            <input type="button" id="back" name="back" class="button-s4" value="返回" onclick="JavaScript:history.forward()">
+        </div>
+    </form>
+</div>

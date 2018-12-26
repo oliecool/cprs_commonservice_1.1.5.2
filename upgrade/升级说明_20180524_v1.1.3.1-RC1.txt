@@ -1,0 +1,28 @@
+﻿一. 升级内容
+	1.201805180709:修改文章模块，已发布的文章允许修改。
+	2.201805150620:修改广告，广告位，新闻资讯模块的内容，后台不再显示编号信息。
+	3.201805150616:开发省市区/县的基础服务功能，提供基础服务，后台提供批量导入的功能，提供基本的增删改查功能
+                 
+	
+二. 升级步骤
+	1. 执行uc_dml_20180523_v1.1.3.1-RC1，创建区域菜单。
+	2. 执行脚本common_ddl_20180524_v1.1.3.1-RC2.sql，创建区域表信息。
+	5. 刷新memcached缓存。
+	6. 在jres-ar的ares-app-config.xml里添加路由配置：（请注意functionid和 nodename中的i和n的大小写，如配置不起作用，可换成functionId  和 nodeName）
+		  <routetable functionid="8801;3111??;" nodename="cprs_commonservice_admin" />
+    7. 更新应用
+   
+
+三.	异常处理
+
+四.注意
+   1.server-static.properties中配置了
+       file.upload.dir=/share/commonservice/upload
+       report.template.dir=/home/cprs/deploy/cprs_commonservice_admin/WEB-INF/views/screen/import/template/
+	   
+	   部署时，如果不存在目录/share/commonservice/upload,请创建
+	   文件的下子路径为report.template.dir，请注意cprs_commonservice_admin，以生产环境为准
+	
+
+  
+	

@@ -1,0 +1,6 @@
+#set($layout = 'layout/blank.vm')
+<!-- 页头 -->
+<div class="body-top">
+		经纪商平台关系
+</div>
+<!-- 页头 END -->

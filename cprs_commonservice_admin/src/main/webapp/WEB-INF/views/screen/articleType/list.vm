@@ -1,0 +1,101 @@
+<script>
+	function edit(id){
+		window.location.href=appServer+"/articleType/edit.htm?id="+id;
+	}
+	function del(id){
+		if(confirm("确认删除？")){
+			window.location.href=appServer+"/articleType/delete.htm?id="+id;
+		}
+	}
+	function add(){
+		window.location.href=appServer+"/articleType/add.htm";
+	}
+	//去除搜索框输入内容的首尾空格
+	function change(obj,id){
+		var value=obj.trim();
+		$("#"+id).val(value);
+	}
+</script>
+<div class="main">
+	<form id="searchForm" action="$!{appServer}/articleType/list.htm" method="post" >
+		<div class="searchBox" style="width:100%">
+				<h5><span>搜索</span></h5>
+	    		<table>
+					<tr>	
+						<th>名称:</th>
+		                <td>
+		                	#springBind("query.articleTypeName")
+		                	<input type="text" id="name" name="${status.expression}" value="$!{status.value}" onchange="change(this.value,'name')"/>
+		                 </td>
+		                 <td>&nbsp;&nbsp;</td>
+			        	<!--<th>编号:</th>
+			        	<td>
+			        	#springBind("query.articleTypeCode")
+			        	<input type="text" id="code" name="${status.expression}" maxlength="20" value="$!{status.value}" onchange="change(this.value,'code')"/>
+			        	</td>-->	        	
+		            	<td>&nbsp;&nbsp;</td>
+		            	##<th>状态:</th>
+			        	##<td>
+			        		###springBind("query.status")
+			        		##<select id="type" name="${status.expression}" style="width:135px;">
+				    				##<option value="" >请选择</option>	
+				    			###foreach($item in $!ArticleTypeStatusMap)
+				    				##<option value="$!{item.code}" #if($!{status.value} == $!{item.code}) selected #end>$!{item.value}</option>	
+				    			###end
+							##</select>
+			            ##<td>			        	
+		            	##<td>&nbsp;&nbsp;</td>
+			            <td>
+			                <input type="submit" name="Submit" value="搜索" class="btn"/>&nbsp;&nbsp;<input type="button" value="清空" class="btn" id="clearInput"/>
+			            </td>
+			        </tr>
+				</table>
+		</div>
+    </form>
+	<div class="tool">
+		 <button type="button" class="btn" align="right" onclick="add()">新增文章分类</button>
+	</div>
+		<div class="listBox">
+		<h5><span>文章分类列表</span></h5>
+		<table style="width:100%;vertical-align: middle;text-align: center;">
+			<tr>
+				<th style="vertical-align: middle !important;text-align: center;">分类名称</th>
+				##<th style="vertical-align: middle !important;text-align: center;">分类编号</td>	    	
+				##<th style="vertical-align: middle !important;text-align: center;">分类状态</th>
+				<th style="vertical-align: middle !important;text-align: center;">分类描述</th>
+				<th style="vertical-align: middle !important;text-align: center;">创建时间</td>
+				<th style="vertical-align: middle !important;text-align: center;">修改时间</td>
+				<th style="vertical-align: middle !important;text-align: center;">操作</th>
+	        </tr>
+	        #if($!{query} && ${query.totalCount} > 0)
+	            #foreach($record in ${query.getData()})
+	                <tr #if($!{velocityCount} % 2 == 0) class="bg" #end>					
+						<td>$!{record.articleTypeName}</td>
+						##<td>$!{record.articleTypeCode}</td>
+						##<td>$!ArticleTypeStatusMap.get($!{record.status}).value</td>            		
+	            		#if($!{record.description}=="")
+	            			<td>--</td>
+	            		#else
+	            			<td>$!{record.description}</td>
+	            		#end
+	            		<td>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{record.gmtCreate})}</td>
+	            		<td>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{record.gmtModify})}</td>
+	            		<td>
+	            		<a href="#" onclick="edit(${record.id})">编辑</a>
+						#if($!{record.definyType}!="system")
+                            <a href="#" onclick="del(${record.id})">删除</a>
+						#end
+
+
+	            		</td>
+	                </tr>
+	            #end            
+	        #end
+        </table>
+		<div class="pages-box" >
+			<div class="pages">
+				#pager($!{query},'searchForm')
+            </div> 
+         </div>
+	</div>
+</div>

@@ -1,0 +1,91 @@
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/kindeditor-min-unupload.js"></script>
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/lang/zh_CN.js"></script>
+<script>
+    //取消按钮
+    function doback(){
+       location.href = "$!{appServer}/plate/plateHelp.htm";
+    }
+</script>
+<div class="main">
+	<h2>查看地方信息</h2>
+  <form  name="addForm" id="addForm"  action="" method="post" enctype="multipart/form-data" onsubmit="return addSubmit()">
+  <div class="formBox">
+    <div class="content">
+	<h3><i></i><span>查看地方信息</span></h3>
+      <table class="c2">
+        <tr>
+          <th><span class="red"></span>地方类型：</th>
+          <td>
+             <select class="select" id="plateType" name="${status.expression}"  onclick="plateTypeChange(this)"  style="width:206px" disabled="disabled">
+	            #foreach($!key in $!{plateTypeMap.keySet()})
+					 <option value="$!key" #if($!{key} == $!{plate.plateType}) selected #end>$!{plateTypeMap.get($!key)}  </option>
+				#end
+			</select>
+            
+		  </td>
+        </tr>
+       #if( $!{plate.plateType} == 'A')
+          <tr>
+	          <th><span  class="red"></span>所属省份：</th>
+	          <td>
+	           <select class="select" id="plateOneSelect" name="${status.expression}"  style="width:206px" disabled="disabled">
+	                 #foreach($item in $!{provinces})
+				         <option value="$!{item.id}" #if($!{item.plate} == $!{plate.provinceName}) selected #end>$!{plate.provinceName}</option>
+				     #end
+				</select>
+			  </td>
+          </tr>
+          <tr>
+	          <th><span  class="red"></span>所属市：</th>
+	          <td>
+	            <select class="select" id="plateTwoSelect" name="${status.expression}"  style="width:206px" disabled="disabled">
+	                 #foreach($item in $!{citys})
+				         <option value="$!{item.id}" #if($!{item.plate} == $!{plate.cityName}) selected #end>$!{plate.cityName}</option>
+				     #end
+				</select>
+			</td>
+         </tr>
+        #end
+         #if( $!{plate.plateType} == 'C')
+           <tr>
+	          <th><span  class="red"></span>所属省份：</th>
+	          <td>
+	           <select class="select" id="plateOneSelect" name="${status.expression}" onChange="plateCity(this.value)" style="width:206px" disabled="disabled">
+	                 #foreach($item in $!{provinces})
+				         <option value="$!{item.id}" #if($!{item.plate} == $!{plate.provinceName}) selected #end>$!{plate.provinceName}</option>
+				     #end
+				</select>
+			  </td>
+          </tr>
+        #end
+         <tr>
+	          <th><span  class="red"></span>地域名称 ：</th>
+	          <td>
+	             $!{plate.plate}
+			  </td>
+        </tr>
+		<!--<tr>
+          <th><span  class="red"></span>是否启用：</th>
+          <td>
+			#if($!{plate.isDelete} == "N")
+			  是
+			#else
+			 否
+			#end
+		  </td>
+        </tr>-->
+      </table>
+    </div>
+    <div class="form-but">
+      <!-- 表单按钮区 -->
+	  <button type="button" class="button-s4" onclick="doback();">返回</button>
+    </div>
+    <!-- 表单按钮区 END -->
+    <div class="clear"></div>
+  </div>
+  </form>
+  <!-- 表单模块 END -->
+  <div class="clear"></div>
+  
+</div>
+

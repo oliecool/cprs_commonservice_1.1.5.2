@@ -1,0 +1,4 @@
+<div class="r-waring">
+	<h3>#if($!message) $message #else 对不起，你访问的页面不存在！ #end</h3>			
+    <button class="button-s12" #if($!url) onclick="JavaScript:window.location.href='$!appServer/$!url'" #else onclick="JavaScript:history.go(-1)" #end >返回</button>
+</div>

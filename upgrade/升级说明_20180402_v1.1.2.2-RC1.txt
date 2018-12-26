@@ -1,0 +1,13 @@
+﻿
+一、升级内容
+   1、 	201803300041  应用重启添加自动获取短信令牌的功能。
+   2、  YBKCP-2284  【公共平台】文章管理-文章维护-里的编码不能重复，提示重复的同时不能保存成功
+   
+二、升级步骤
+	
+
+三、注意事项
+	修改quartz.properties文件中的org.quartz.scheduler.instanceName = commonQuartzScheduler
+  
+四、异常处理
+	

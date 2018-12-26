@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hundsun.cprs.commonservice.advertisement.dao.AdPositionDao">
+	<resultMap id="BaseResultMap" type="com.hundsun.cprs.commonservice.advertisement.domain.AdPosition" >
+		<result column="ID" property="id" jdbcType="DECIMAL" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="systemtype" property="systemtype" jdbcType="VARCHAR" />
+		<result column="adPositionTypeId" property="adPositionTypeId" jdbcType="DECIMAL" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="template" property="template" jdbcType="VARCHAR" />
+		<result column="definy_Type" property="definyType" jdbcType="VARCHAR" />
+		<result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="GMT_MODIFIED" property="gmtModify" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<resultMap id="ResultMap" type="com.hundsun.cprs.commonservice.advertisement.domain.AdPosition" >
+		<result column="ID" property="id" jdbcType="DECIMAL" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="systemtype" property="systemtype" jdbcType="VARCHAR" />
+		<result column="adPositionTypeId" property="adPositionTypeId" jdbcType="DECIMAL" />
+		<result column="adPositionTypeName" property="adPositionTypeName" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="template" property="template" jdbcType="VARCHAR" />
+		<result column="definy_Type" property="definyType" jdbcType="VARCHAR" />
+		<result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="GMT_MODIFIED" property="gmtModify" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="baseColumns" >
+    name,
+    code,
+    systemtype,
+    adPositionTypeId,
+    description,
+    template,
+    definy_Type,
+    GMT_CREATE,
+    GMT_MODIFIED
+  </sql>
+	<sql id="PAGE_END">
+	   <![CDATA[ limit #{start},#{end} ]]>
+	</sql>
+	<insert id="createAdPosition" parameterType="com.hundsun.cprs.commonservice.advertisement.domain.AdPosition">
+		insert into commonservice_adPosition (<include refid="baseColumns" />)
+		values(#{name},#{code},#{systemtype},#{adPositionTypeId},#{description},#{template},#{definyType},now(),now())
+	</insert>
+
+	<select id="selectAdPositionCount" parameterType="com.hundsun.cprs.commonservice.advertisement.domain.query.AdPositionQuery" resultType="java.lang.Integer">
+		select count(1)
+		from commonservice_adPosition a left join commonservice_adPositiontype g on g.id=a.adPositionTypeId
+		<where>
+			1=1
+			<if test="name != null and name != ''">AND a.name like CONCAT('%',#{name},'%')</if>
+			<if test="code != null and code != ''"> AND  a.code=#{code}</if>
+			<if test="systemtype != null and systemtype != ''"> AND  a.systemtype=#{systemtype}</if>
+			<if test="adPositionTypeId != null"> AND  a.adPositionTypeId=#{adPositionTypeId}</if>
+		</where>
+
+	</select>
+
+	<select id="selectAdPositionByPage" resultMap="ResultMap">
+		select a.*,g.name as adPositionTypeName
+		from commonservice_adPosition a left join commonservice_adPositiontype g on g.id=a.adPositionTypeId
+		<where>
+			1=1
+			<if test="query.name != null and query.name != ''">AND a.name like CONCAT('%',#{query.name},'%')</if>
+			<if test="query.code != null and query.code != ''"> AND  a.code=#{query.code}</if>
+			<if test="query.systemtype != null and query.systemtype != ''"> AND  a.systemtype=#{query.systemtype}</if>
+			<if test="query.adPositionTypeId != null"> AND  a.adPositionTypeId=#{query.adPositionTypeId}</if>
+		</where>
+		order by a.GMT_CREATE desc
+		<include refid="PAGE_END"/>
+	</select>
+
+	<delete id="deleteAdPosition" parameterType="java.lang.Long">
+		delete from commonservice_adPosition
+		where id=#{id}
+	</delete>
+
+	<update id="editAdPosition" parameterType="com.hundsun.cprs.commonservice.advertisement.domain.AdPosition">
+		update commonservice_adPosition
+		<set>
+			GMT_MODIFIED=now() , description=#{description}, template=#{template}
+			<if test="name != null and name != ''">, name=#{name}</if>
+			<if test="code != null and code != ''"> , code=#{code}</if>
+			<if test="systemtype != null and systemtype != ''">,  systemtype=#{systemtype}</if>
+			<if test="adPositionTypeId != null"> ,  adPositionTypeId=#{adPositionTypeId}</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<select id="selectAdPositionById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * from commonservice_adPosition
+		where id=#{id}
+	</select>
+
+	<select id="selectAdPositionList" resultMap="BaseResultMap">
+		select * from commonservice_adPosition
+	</select>
+
+	<select id="selectAdPositionBycode" resultMap="BaseResultMap">
+		select * from commonservice_adPosition
+		where code=#{code}
+	</select>
+
+	<select id="selectAdPositionBycodeOrType" resultMap="BaseResultMap">
+		select * from commonservice_adPosition
+		<where>
+			1=1
+			<if test="adPositioncode != null and adPositioncode != ''"> AND  code=#{adPositioncode}</if>
+			<if test="adPositionTypeCode != null and adPositionTypeCode!=''"> AND  adPositionTypeId in (select id from commonservice_adPositiontype where code=#{adPositionTypeCode})</if>
+		</where>
+	</select>
+</mapper>
+

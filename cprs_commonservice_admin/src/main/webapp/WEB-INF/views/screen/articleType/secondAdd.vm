@@ -1,0 +1,46 @@
+<script src="$!{appServer}/scripts/article/articleType.js" type="text/javascript"></script>
+<div class="main">
+    <form id="searchForm" action="$!{appServer}/articleType/add.htm" method="post">
+        <h2>新增文章二级分类</h2>
+        <div id="addTypeForm" class="formBox">
+            <div class="div-1">
+                <div class="content">
+                    <table class="c2">
+                        <tr>
+                            <th><span style="color:red">*</span>二级分类名称：</th>
+                            <td>
+                                <input type="text" id="name" name="articleTypeName" maxlength="10" onkeyup="this.value=this.value.replace(/\s+/g,'')"/>
+                                <span id="nameInfo" style="color:red"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><span style="color:red">*</span>二级分类编码：</th>
+                            <td>
+                                <input type="text" id="code" name="articleTypeCode" maxlength="15" onchange="checkCode(this.value)" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"/>
+                                <span id="codeInfo" style="color:red"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><span style="color:red">*</span>所属一级分类：</th>
+                            <td>
+                                <input type="hidden" id="parentId" name="parentId" maxlength="50" style="width:77%;" value="$!{articleType.id}"/>
+                                <input type="text" disabled="disabled" value="$!{articleType.articleTypeName}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>二级分类描述：</th>
+                            <td><textarea  id="description" name="description" style="width:300px;height:50px;" maxlength="50"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="form-but"><!-- 表单按钮区 -->
+
+            <input type="button" value="保存" onclick="sub()" id="saveIdentityId"  class="button-s4"/>
+
+            <input type="button" id="back" name="back" class="button-s4" value="返回" onclick="JavaScript:history.forward()">
+        </div>
+    </form>
+</div>

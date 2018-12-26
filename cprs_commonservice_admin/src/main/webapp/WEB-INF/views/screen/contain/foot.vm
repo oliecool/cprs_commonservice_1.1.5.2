@@ -1,0 +1,8 @@
+#set($layout = 'layout/blank.vm')
+<!-- 页脚 -->  
+<div class="body-foot">
+    <p>
+        Copyright 2017 版权所有 经纪商平台关系系统
+    </p>
+</div>
+<!-- 页脚 END -->

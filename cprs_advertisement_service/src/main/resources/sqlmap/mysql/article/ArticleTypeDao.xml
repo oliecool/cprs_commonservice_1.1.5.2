@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hundsun.cprs.commonservice.article.dao.ArticleTypeDao">
+	<resultMap id="BaseResultMap" type="com.hundsun.cprs.commonservice.article.domain.ArticleType" >
+		<result column="ID" property="id" jdbcType="DECIMAL" />
+		<result column="articleType_name" property="articleTypeName" jdbcType="VARCHAR" />
+		<result column="articleType_code" property="articleTypeCode" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="definy_Type" property="definyType" jdbcType="VARCHAR" />
+		<result column="parentId" property="parentId" jdbcType="DECIMAL" />
+		<result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="baseColumns" >
+    articleType_name,
+    articleType_code,
+    status,
+    description,
+    definy_Type,
+    parentId,
+    gmt_create,
+    gmt_modify
+  </sql>
+
+	<insert id="createArticleType" parameterType="com.hundsun.cprs.commonservice.article.domain.ArticleType">
+		insert into trade_article_Type (<include refid="baseColumns" />)
+		values(#{articleTypeName},#{articleTypeCode},#{status},#{description},#{definyType},#{parentId},now(),now())
+	</insert>
+
+	<select id="selectArticleTypeByPage" resultMap="BaseResultMap">
+		select * from trade_article_Type
+		<where>
+			1=1
+			<if test="articleTypeName != null and articleTypeName != ''">AND articleType_name like CONCAT('%',#{articleTypeName},'%')</if>
+			<if test="articleTypeCode != null and articleTypeCode != ''"> AND  articleType_code=#{articleTypeCode}</if>
+			<if test="status != null and status != ''"> AND  status=#{status}</if>
+		</where>
+		order by GMT_CREATE desc
+	</select>
+
+	<delete id="deleteArticleType" parameterType="java.lang.Long">
+		delete from trade_article_Type
+		where id=#{articleTypeId}
+	</delete>
+
+	<update id="editArticleType" parameterType="com.hundsun.cprs.commonservice.article.domain.ArticleType">
+		update trade_article_Type
+		<set>
+			gmt_modify=now(), description=#{description}
+			<if test="articleTypeName != null and articleTypeName != ''">, articleType_name=#{articleTypeName}</if>
+			<if test="articleTypeCode != null and articleTypeCode != ''"> , articleType_code=#{articleTypeCode}</if>
+			<if test="parentId != null"> , parentId=#{parentId}</if>
+			<if test="status != null and status != ''"> ,  status=#{status}</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<select id="selectArticleTypeById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * from trade_article_Type
+		where id=#{articleTypeId}
+	</select>
+
+	<select id="selectArticleTypeBycode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from trade_article_Type
+		where articleType_code=#{code}
+	</select>
+
+	<select id="selectArticleTypeList" resultMap="BaseResultMap">
+		select * from trade_article_Type
+	</select>
+
+	<select id="selectFirstArticleTypeList" resultMap="BaseResultMap">
+		select * from trade_article_Type where parentId=0
+	</select>
+	
+	<select id="selectSecondArticleTypeList" resultMap="BaseResultMap">
+		select * from trade_article_Type where parentId !=0
+	</select>
+
+	<select id="selectSecondArticleTypeListById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * from trade_article_Type where parentId=#{articleTypeId}
+	</select>
+</mapper>
+

@@ -1,0 +1,21 @@
+#set($layout = 'layout/default.vm')
+<script>
+    function addSecondType() {
+        window.location.href=appServer+"/articleType/add.htm?articleTypeId="+$("#articleTypeId").val();
+    }
+    function addFirstType() {
+        window.location.href=appServer+"/articleType/add.htm";
+    }
+</script>
+<body>
+<div class="main">
+    <h2>请选择要新增的项目</h2>
+    ##<p class="edit">说明：左侧一级分类表示广告位分类，二级分类表示广告位</p>
+    <br/>
+    <input type="hidden" id="articleTypeId" value="$!{articleTypeId}">
+    <input type="button" class="btn" onclick="addFirstType()" value="新增一级分类"/>
+    <br><br>
+    <input type="button" class="btn" onclick="addSecondType()" value="新增二级分类"/>
+    <div class="clear"></div>
+</div>
+</body>

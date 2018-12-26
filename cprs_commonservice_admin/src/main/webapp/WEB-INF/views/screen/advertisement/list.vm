@@ -1,0 +1,114 @@
+<script>
+    function edit(id){
+        window.location.href=appServer+"/advertisement/edit.htm?id="+id;
+    }
+    function view(id){
+        window.location.href=appServer+"/advertisement/view.htm?id="+id;
+    }
+    function del(id){
+        if(confirm("确认删除？")){
+            window.location.href=appServer+"/advertisement/delete.htm?id="+id;
+        }
+    }
+    function add(){
+        window.location.href=appServer+"/advertisement/add.htm?adpositionId="+$("#adpositionValue").val();
+    }
+</script>
+<div class="main">
+    <form id="searchForm" action="$!{appServer}/view/advertisementList.htm" method="post" >
+        <div class="searchBox" style="width:100%">
+            <h5><span>搜索</span></h5>
+            <table>
+                <tr>
+                    <th>标题：</th>
+                    <td>
+						#springBind("query.title")
+                        <input type="text" id="title" name="${status.expression}" value="$!{status.value}" />
+                    </td>
+                    <td>&nbsp;&nbsp;</td>
+
+                    <th>类型:</th>
+                    <td>
+						#springBind("query.type")
+                        <select id="type" name="${status.expression}" style="width:135px;">
+                            <option value="" >请选择</option>
+							#foreach($item in $!AdvertisementTypeMap)
+                                <option value="$!{item.code}" #if($!{status.value} == $!{item.code}) selected #end>$!{item.value}</option>
+							#end
+                        </select>
+                    <td>
+                    <td>&nbsp;&nbsp;</td>
+                    <!-- <th>广告位:</th> -->
+                    <td style="display:none;">
+						#springBind("query.adPositionId")
+                        <select id="adPositionId" name="${status.expression}" style="width:135px;">
+                            <option value="" >请选择</option>
+							#foreach($item in $!AdPositionList)
+                                <option value="$!{item.Id}" #if($!{status.value} == $!{item.id}) selected #end>$!{item.name}</option>
+							#end
+                        </select>
+                    </td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td>
+                        <input type="submit" name="Submit" value="搜索" class="btn"/>&nbsp;&nbsp;<input type="button" value="清空" class="btn" id="clearInput"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    <div class="tool">
+        <button type="button" class="btn" align="right" onclick="add()">新增广告</button>
+        <input type="hidden" id="adpositionValue" value="$!{query.adPositionId}">
+    </div>
+    <div class="listBox">
+        <h5><span>广告列表</span></h5>
+        <table style="width:100%; vertical-align: middle;text-align: center;">
+            <tr>
+                <th style="vertical-align: middle !important;text-align: center;">标题</th>
+                <th style="vertical-align: middle !important;text-align: center;">广告位</td>
+                <th style="vertical-align: middle !important;text-align: center;">类型</th>
+                <th style="vertical-align: middle !important;text-align: center;">开始时间</th>
+                <th style="vertical-align: middle !important;text-align: center;">结束时间</th>
+                <th style="vertical-align: middle !important;text-align: center;">排序号</td>
+                <th style="vertical-align: middle !important;text-align: center;">操作</th>
+            </tr>
+			#if($!{query} && ${query.totalCount} > 0)
+				#foreach($record in ${query.getData()})
+                    <tr #if($!{velocityCount} % 2 == 0) class="bg" #end>
+                      
+                        #if($!{stringUtils.substring($!{record.title},5,6)}=="")
+                        	<td>
+	                            <a href="$!{appServer}/advertisement/view.htm?id=$!{record.id}" style="color:#0066CC">
+									$!{record.title}
+	                            </a>                                                     
+	                        </td>
+						#else
+							<td>
+	                            <a href="$!{appServer}/advertisement/view.htm?id=$!{record.id}" style="color:#0066CC">									
+									$!{stringUtils.substring($!{record.title},0,5)}.........
+	                            </a>                                                     
+	                        </td>	            		
+	            		#end
+                        <td>$!{record.adPositionName}</td>
+                        <td>$!AdvertisementTypeMap.get($!{record.type}).value</td>
+                        <td>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{record.beginDate})}</td>
+                        <td>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{record.endDate})}</td>
+                        <td>$!{record.orders}</td>
+                        <td>
+                            <a href="#" onclick="edit(${record.id})">编辑</a>
+							#if($!{record.definyType}!="system")
+                                <a href="#" onclick="del(${record.id})">删除</a>
+							#end
+                            <a href="#" onclick="view(${record.id})">详情</a>
+                        </td>
+                    </tr>
+				#end
+			#end
+        </table>
+        <div class="pages-box" >
+            <div class="pages">
+				#pager($!{query},'searchForm')
+            </div>
+        </div>
+    </div>
+</div>

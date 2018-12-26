@@ -1,0 +1,61 @@
+<div class="main">
+    <form id="searchForm">
+
+        #if($!parentType)
+            <h2>文章二级分类详情</h2>
+        #else
+            <h2>文章一级分类详情</h2>
+        #end
+
+        <div id="addTypeForm" class="formBox">
+            <div class="div-1">
+                <div class="content">
+                    <table class="c2" style="width:90%;">
+                        <tr>
+                            <th>分类名称：</th>
+                            <td>
+                                <span>$!articleType.articleTypeName</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>分类编码：</th>
+                            <td>
+                                <span>$!articleType.articleTypeCode</span>
+                            </td>
+                        </tr>
+                        #if($!parentType)
+                            <tr>
+                                <th>所属一级分类：</th>
+                                <td>
+                                    <span>$!parentType.articleTypeName</span>
+                                </td>
+                            </tr>
+                        #end
+                        <tr>
+                            <th>分类描述：</th>
+                            <td>
+                                <span>$!{articleType.description}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>创建时间：</th>
+                            <td>
+                                <span>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{articleType.gmtCreate})}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>修改时间：</th>
+                            <td>
+                                <span>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{articleType.gmtModify})}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="form-but"><!-- 表单按钮区 -->
+            <input type="button" id="back" name="back" class="button-s4" value="返回" onclick="JavaScript:history.forward()">
+        </div>
+    </form>
+</div>

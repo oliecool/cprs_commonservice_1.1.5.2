@@ -1,0 +1,94 @@
+#set($layout = 'layout/default.vm')
+<link href="$!{appServer}/scripts/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+<script type="text/javascript" src="$!{appServer}/scripts/artDialog/jquery.artDialog.js?skin=aero"></script>
+<script type="text/javascript" src="$!{appServer}/scripts/artDialog/artDialog.iframeTools.js"></script>
+<script src="$!{appServer}/scripts/zTree/jquery.ztree-2.6.min.js" type="text/javascript"></script>
+<script>
+    var  id ="";
+    function loadTree(){
+        var treeBox = $("#plateTreeUL");
+        var setting = {
+            expandSpeed : "",
+            async : true,
+            asyncUrl : appServer+"/ajax/getAdpositionTypeTree.json", // 获取节点数据的URL地址
+            asyncParam : ["id","name"], // 获取节点数据时，必须的数据名称，例如：id，name
+            showLine : true,
+            isSimpleData : true,
+            treeNodeKey : "id",
+            treeNodeParentKey : "adPositionTypeId",
+            callback : {
+                click: function(event, treeId, treeNode){
+                    if(treeNode.adPositionTypeId==null){
+                        document.getElementById('add').href=appServer+"/advertisement/addWhat.htm?id="+treeNode.id;
+                        document.getElementById('edit').href=appServer+"/adPositionType/edit.htm?id="+treeNode.id;
+                        document.getElementById('delete').href=appServer+"/adPositionType/delete.htm?id="+treeNode.id;
+                        document.getElementById('detail').href=appServer+"/adPositionType/view.htm?id="+treeNode.id;
+                    }else{
+                        document.getElementById('add').href=appServer+"/adposition/add.htm?adpositionTypeId="+treeNode.adPositionTypeId;
+                        document.getElementById('edit').href=appServer+"/adposition/edit.htm?id="+treeNode.id;
+                        document.getElementById('delete').href=appServer+"/adposition/delete.htm?id="+treeNode.id;
+                        document.getElementById('detail').href=appServer+"/adposition/view.htm?id="+treeNode.id;
+                    }
+                    id=treeNode.id;
+                    var obj = new Object();
+                    obj.id='view';
+                    obj.adPositionTypeId=treeNode.adPositionTypeId;
+                    loadURL(obj);
+                }
+            }
+        };
+        var prjTypeTreeNodes = [];
+        treeBox.zTree(setting, prjTypeTreeNodes);
+    }
+
+
+    ##添加、删除、修改url
+    function loadURL(a){
+        if(id!="" && a.id=="view" && a.adPositionTypeId != null){	//查看顶级节点
+            window.parent.frames.listright.location.href=appServer+"/view/advertisementList.htm?adPositionId="+id;
+            return;
+        }
+        if(id!="" && a.id=="view" && a.adPositionTypeId==null){
+            window.parent.frames.listright.location.href=appServer+"/advertisement/advertisementRight.htm";
+            return;
+        }
+
+        if(id==""){
+            alert('请在树中选择要操作的类型！');
+        }else{
+
+            if(a.id=="delete"){
+                if(confirm('确定要删除吗?')){
+                    window.parent.frames.listright.location.href=a.href;
+                }else{
+                    return;
+                }
+            }
+            if(a.id=="add" || a.id=="edit" || a.id=="detail"){
+                window.parent.frames.listright.location.href=a.href;
+            }
+
+        }
+    }
+
+
+    $(function(){
+        loadTree();
+    });
+
+</script>
+
+<div class="ctrls">
+
+    <p class="addleaf"><a id="add" title="添加广告位或分类" href="javascript:void(0)" onclick="javascript:loadURL(this);return false;" ><img src="$!{appServer}/images/admin/role_add.gif" width="20" height="19" /></a></p>
+
+    <p class="edit"><a id="edit" title="编辑广告位或分类" href="javascript:void(0)" onclick="javascript:loadURL(this);return false;" ><img src="$!{appServer}/images/admin/role_edit.gif" width="20" height="19" /></a></p>
+
+    <p class="edit"><a id="delete" title="删除广告位或分类"  href="javascript:void(0)" onclick="javascript:loadURL(this);return false;" ><img src="$!{appServer}/images/admin/ico_delete.png" width="16" height="16" /></a></p>
+
+    <p class="edit"><a id="detail" title="查看详情" href="javascript:void(0)" onclick="javascript:loadURL(this);return false;" ><img src="$!{appServer}/images/admin/tree_help.gif" width="15" height="15" /></a></p>
+    <div style="clear: both;"></div>
+</div>
+<ul id="plateTreeUL" class="tree" ></ul>
+
+

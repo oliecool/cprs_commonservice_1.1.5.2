@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+	<!-- 注意:要起效加密文件,此文件必须要在classes根目录
+		  同时web.xml需加载加密的servlet listener
+	 -->
+	<args bits="128" onoff="on" />
+	<file path="server.properties" ifAbsolutePath="off">
+		<field name="jdbc.url" />
+		<field name="jdbc.username" />
+		<field name="jdbc.password" />
+		<field name="quartz.url" />
+		<field name="quartz.username" />
+		<field name="quartz.password" />
+	</file>
+</files>

@@ -1,0 +1,18 @@
+@charset "utf-8";
+/* CSS Document */
+.ifram_top{ background:url(../images/admin/skin-one/top.png) repeat-x; }
+.admin-top { background-image:url(../images/admin/skin-one/frame_bg1.gif);background-color:transparent;}
+.admin-top p span { color:#000;}
+.admin-top p span a{ color:#000;}
+.admin-top p a.out{ background-image:url(../images/admin/skin-one/out.gif)}
+.toptab ul li{background-image:url(../images/admin/skin-one/tab_bg2.png)}
+.toptab ul li span{background-image:url(../images/admin/skin-one/tab_bg2.png)}
+.toptab ul li.c{background-image:url(../images/admin/skin-one/tab_bg1.png)}
+.toptab ul li.c span{background-image:url(../images/admin/skin-one/tab_bg1.png)}
+.menu-tree h3 a{ background-image:url(../images/admin/skin-one/menu_bgs.gif)}
+.menu-tree h3 a.c{ background-image:url(../images/admin/skin-one/menu_bgs_1.gif)}
+.listBox h5{background-image:url(../images/admin/skin-one/inp_bg.png)}
+.formBox h3{background-image:url(../images/admin/skin-one/inp_bg.png)}
+.formBox h3 span{background-image:url(../images/admin/skin-one/left-top-right.gif)}
+.formBox h3 i{background-image:url(../images/admin/skin-one/nav-right-bg.gif);}
+.admin-foot{color:#333; background: url(../images/admin/skin-one/frame_bg1.gif) 0 -41px repeat-x;}

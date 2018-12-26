@@ -1,0 +1,16 @@
+label.error {
+	color: red;
+	padding: 3px 10px;
+}
+
+span.error {
+color:#F00;
+}
+
+.validate {
+	color: red
+}
+
+div.error {
+	color: red;
+}

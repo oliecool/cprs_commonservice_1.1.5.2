@@ -1,0 +1,98 @@
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/kindeditor-min-unupload.js"></script>
+<script charset="utf-8" src="${appServer}/scripts/kindEditor/lang/zh_CN.js"></script>
+<script src="$!{appServer}/scripts/advertisement/advertisement.js" type="text/javascript"></script>
+
+<style type="text/css">
+    .textarea {
+        width: 100%;
+        min-height: 300px;
+        max-height: 300px;
+        margin-left: 0px;
+        margin-right: auto;
+        padding: 3px;
+        outline: 0;
+        border: 1px solid #a0b3d6;
+        font-size: 12px;
+        line-height: 24px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border-color: rgba(82, 168, 236, 0.8);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+    }
+
+    .formBox .c2 .textarea, .formBox .c7 .textarea{
+        width: 690px;
+    }
+</style>
+
+<div class="main">
+    <form id="searchForm">
+        <h2>广告详情</h2>
+        <div id="addTypeForm" class="formBox">
+            <div class="div-1">
+                <div class="content">
+                    <table class="c2" style="width:90%;">
+                        <tr>
+                            <th>标题：</th>
+                            <td>
+                                <span>$!advertisement.title</span>
+                            </td>
+                            <th>排序号：</th>
+                            <td>
+                                <span>$!advertisement.orders</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>类型：</th>
+                            <td>
+                                <span>$!AdvertisementTypeMap.get($!advertisement.type).value</span>
+                            </td>
+                            <th>广告位：</th>
+                            <td>
+                                <span>$!{adPosition.name}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>开始时间：</th>
+                            <td>
+                                <span>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{advertisement.beginDate})}</span>
+                            </td>
+
+                            <th>结束时间：</th>
+                            <td>
+                                <span>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{advertisement.endDate})}</span>
+                            </td>
+                        </tr>
+						#if($!{advertisement.type}=="2")
+                            <tr id="kinderEdit">
+                                <th></th>
+                                <td colspan="3">
+                                    <span style="margin-left:-45px;">内容：</span>
+                                    <div class="textarea" >
+
+										#direct($!{advertisement.content})
+                                    </div>
+                                </td>
+                                </td>
+                            </tr>
+						#elseif($!{advertisement.type}=="1")
+                            <tr id="picture">
+                                <th>压缩图：</th>
+                                <td><img alt="" src="$!{imageServer}/$!{advertisement.path}" style="height:60px;"/></td>
+                                <th>链接：</th>
+                                <td>
+                                    <span>$!advertisement.url</span>
+                                </td>
+                            </tr>
+						#end
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="form-but"><!-- 表单按钮区 -->
+            <input type="button" id="back" name="back" class="button-s4" value="返回" onclick="JavaScript:history.forward()">
+        </div>
+    </form>
+</div>

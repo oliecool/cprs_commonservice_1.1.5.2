@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"  xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"  
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd   
+	http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+	http://mybatis.org/schema/mybatis-spring  
+	http://mybatis.org/schema/mybatis-spring.xsd
+	http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd" default-lazy-init="false">
+	
+	<bean id="basicDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">    
+        <property name="url" value="${jdbc.url}" />    
+        <property name="username" value="${jdbc.username}" />    
+        <property name="password" value="${jdbc.password}" />
+        <property name="initialSize" value="1" />  
+        <property name="minIdle" value="${jdbc.minIdle}" />  
+        <property name="maxActive" value="${jdbc.maxActive}" />  
+        <property name="maxWait" value="${jdbc.maxWait}" />  
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />  
+        <property name="minEvictableIdleTimeMillis" value="300000" />  
+        <property name="validationQuery" value="select 1 from dual" />
+        <property name="testWhileIdle" value="true" />  
+        <property name="testOnBorrow" value="false" />  
+        <property name="testOnReturn" value="false" />   
+    		<property name="removeAbandoned" value="true"/>
+    </bean>
+
+   <tx:advice  id="txAdvice" transaction-manager="transactionManager">
+       <tx:attributes>
+           <tx:method name="*" propagation="REQUIRED" read-only="false"/>
+       </tx:attributes>
+   </tx:advice>
+   
+	
+   <aop:config>
+       <aop:pointcut expression="execution(* update*(..))" id="bizMethods"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="bizMethods"/>
+   </aop:config>
+
+	<bean id="dataSource" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>javax.sql.DataSource</value>
+		</property>
+		<property name="target" ref="basicDataSource">
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="typeAliasesPackage" value="com.hundsun.cprs.commonservice.sms" />
+		<property name="typeAliasesSuperType" value="com.hundsun.cprs.commonservice.sms.common.DomainBase" />
+		<property name="mapperLocations">
+			<value>classpath*:sqlmap/mysql/**/*.xml</value>
+		</property>
+		<property name="configuration">
+			<bean class="org.apache.ibatis.session.Configuration">
+				<property name="cacheEnabled" value="true" />
+				<property name="lazyLoadingEnabled" value="true" />
+				<property name="defaultStatementTimeout" value="3000" />
+				<property name="useGeneratedKeys" value="true" />
+				<property name="mapUnderscoreToCamelCase" value="true" />
+			</bean>
+		</property>
+		<property name="plugins">
+			<array>
+				<bean class="com.github.pagehelper.PageInterceptor">
+					<property name="properties">
+						<!--使用下面的方式配置参数，一行配置一个 -->
+						<!-- 兼容com.hundsun.cprs.bid.common.page.Pagination配置 -->
+						<!-- 具体参考:https://github.com/pagehelper/Mybatis-PageHelper/blob/master/wikis/zh/HowToUse.md -->
+						<value>
+							helperDialect=mysql
+							reasonable=true
+							pageSizeZero=true
+							supportMethodsArguments=true
+							params=pageNum=pageNo;pageSize=pageSize;count=countSql;
+						</value>
+					</property>
+				</bean>
+			</array>
+		</property>
+	</bean>
+
+	<!--代替原来每一个dao的配置,自动配置dao -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	    <property name="sqlSessionFactoryBeanName"  value="sqlSessionFactory"/>
+	    
+		<property name="basePackage" >
+		   <value>com.hundsun.cprs.commonservice.*.dao</value>
+		</property>
+	</bean>
+</beans>

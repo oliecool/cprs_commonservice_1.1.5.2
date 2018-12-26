@@ -1,0 +1,7 @@
+#set($layout = 'layout/error.vm')
+#set($title = '操作失败')
+<link rel="stylesheet" href="$!{appServer}/styles/result.css" type="text/css">
+<div class="r-error">
+    	<h3>您没有此功能的权限。</h3>
+        <button class="button-s9" type="button" style="margin-top:20px;" onclick="javascript:#if($!{url})window.location.href='$!{appServer}$!{url}.htm'#else history.go(-1)#end">返回</button>
+</div>

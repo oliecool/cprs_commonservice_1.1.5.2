@@ -1,0 +1,34 @@
+#set($layout = 'layout/default.vm')
+<script>
+    $(function(){
+        var errorMessage = jQuery("#message").val();
+        if(errorMessage !=null && errorMessage != ""){
+            alert(errorMessage);
+        }
+
+        window.parent.frames.listleft.location.reload();
+    });
+
+</script>
+<body>
+<div class="main">
+    <h2>文章信息管理帮助</h2>
+    <p class="edit">说明：左侧为文章分类列表，二级分类下可查看文章</p>
+    <br/>
+    <p class="edit"><img style="vertical-align:middle;width:20px;height: 19px;" src="$!{appServer}/images/admin/role_add.gif" title="新增"/>：点击可新增一级分类或者二级分类</p>
+    <br/>
+    <p class="edit"><img style="vertical-align:middle;width:20px;height: 19px;" src="$!{appServer}/images/admin/role_edit.gif" title="编辑"/>：点击可编辑一级分类或二级分类</p>
+    <br/>
+    <p class="edit"><img style="vertical-align:middle;width:16px;height: 16px;" src="$!{appServer}/images/admin/ico_delete.png" title="删除"/> ：点击可删除一级或二级分类，若分类为系统创建或者分类下存在内容，则不可删除</p>
+    <br/>
+    <p class="edit"><img style="vertical-align:middle;width:15px;height: 15px;" src="$!{appServer}/images/admin/tree_help.gif" title="查看详情"/> ：点击可查看一级或二级分类的详细信息</p>
+    <br/>
+    <div class="clear"></div>
+</div>
+
+<!-- 表单模块 END -->
+<div class="clear"></div>
+<input type="hidden" id="message" name="${status.expression}" value="$!{message}"/>
+</div>
+
+</body>

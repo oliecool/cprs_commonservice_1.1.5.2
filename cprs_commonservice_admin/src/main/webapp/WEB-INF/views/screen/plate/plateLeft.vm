@@ -1,0 +1,98 @@
+#set($layout = 'layout/default.vm')
+<link href="$!{appServer}/scripts/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+<script type="text/javascript" src="$!{appServer}/scripts/artDialog/jquery.artDialog.js?skin=aero"></script>
+<script type="text/javascript" src="$!{appServer}/scripts/artDialog/artDialog.iframeTools.js"></script>
+<script src="$!{appServer}/scripts/zTree/jquery.ztree-2.6.min.js" type="text/javascript"></script>
+<script>
+	var  id ="";
+	function loadTree(){
+		var treeBox = $("#plateTreeUL");
+		##var targetURL = appServer+"/baseset/projecttype/attriList.htm"; //查看属性列表
+		var setting = {
+			expandSpeed : "",
+			async : true,
+			asyncUrl : appServer+"/ajax/getPlateTypeTree.json", // 获取节点数据的URL地址
+			asyncParam : ["id","name", "plateType"], // 获取节点数据时，必须的数据名称，例如：id、plate
+			showLine : true,
+			isSimpleData : true,
+			treeNodeKey : "id",
+			treeNodeParentKey : "parentId",
+			callback : {
+              click: function(event, treeId, treeNode){
+					 document.getElementById('add').href=appServer+"/plate/add.htm";
+					 document.getElementById('edit').href=appServer+"/plate/plateUpdate.htm?id="+treeNode.id;
+					 ##document.getElementById('enable').href=appServer+"/classify/enable.htm?id="+treeNode.id;
+					 ##document.getElementById('close').href=appServer+"/classify/close.htm?id="+treeNode.id;
+					 document.getElementById('delete').href=appServer+"/plate/plateDelete.htm?id="+treeNode.id;
+					 document.getElementById('view').href=appServer+"/plate/plateView.htm?id="+treeNode.id;
+					 id=treeNode.id;
+					 var obj = new Object();
+					 obj.id='view';
+					 loadURL(obj);
+				}
+            }
+		};
+		var prjTypeTreeNodes = [];
+		treeBox.zTree(setting, prjTypeTreeNodes);
+	}
+    
+    
+    ##添加、删除、修改url
+	function loadURL(a){
+	    if(id!="" && a.id=="view"){	//查看顶级节点
+			window.parent.frames.listright.location.href=appServer+"/plate/plateView.htm?id="+id;
+			return;
+		}
+		
+		if(a.id=="add"){	//添加顶级节点
+			window.parent.frames.listright.location.href=appServer+"/plate/plateAdd.htm";
+			return;
+		}
+    	if(id==""){
+    	   alert('请在树中选择要操作的类型！');
+    	}else{
+			
+			if(a.id=="delete"){
+				if(confirm('确定要删除此地方信息吗?')){
+					window.parent.frames.listright.location.href=a.href;
+				}else{
+					return;
+				}
+			}
+			if(a.id=="add" || a.id=="edit"){
+				window.parent.frames.listright.location.href=a.href;
+			}
+    	    
+    	}
+	}
+	
+	
+	$(function(){
+		loadTree();	
+	});
+	
+</script>
+
+<div class="ctrls">
+  ##if($adminAccess.has('PROVINCE_MANAGE_ADD'))
+  <p class="addleaf"><a id="add" title="添加省市区信息" href="javascript:void(0)" onclick="javascript:loadURL(this);return false;" ><img src="$!{appServer}/images/admin/role_add.gif" width="20" height="19" /></a></p>
+  
+  ##end
+  ##if($adminAccess.has('PROVINCE_MANAGE_UPDATE'))
+  <p class="edit"><a id="edit" title="编辑省市区信息" href="javascript:void(0)" onclick="javascript:loadURL(this);return false;" ><img src="$!{appServer}/images/admin/role_edit.gif" width="20" height="19" /></a></p>
+  ##end
+  ##if($adminAccess.has('CLASSIFY_MANAGE_DEFEND_ENABLE'))
+  ##<p class="edit"><a id="enable" title="启用项目类型"  href="javascript:void(0)" onclick="javascript:loadURL(this);return false;" ><img src="$!{appServer}/images/admin/ico_accept.png" width="20" height="19" /></a></p>
+  ##end
+  ##if($adminAccess.has('CLASSIFY_MANAGE_DEFEND_DISABLE'))
+  ##<p class="edit"><a id="close" title="包括删除省市区信息"  href="javascript:void(0)" onclick="javascript:loadURL(this);return false;" ><img src="$!{appServer}/images/admin/ico_delete.png" width="20" height="19" /></a></p>
+  ##end
+  ##if($adminAccess.has('PROVINCE_MANAGE_DELETE'))
+  <p class="edit"><a id="delete" title="删除省市区信息"  href="javascript:void(0)" onclick="javascript:loadURL(this);return false;" ><img src="$!{appServer}/images/admin/remove.png" width="20" height="19" /></a></p>
+  ##end
+  <p class="addleaf"><a id="view" title="" href="javascript:void(0)" style='display:inline;'></a></p>
+  <div style="clear: both;"></div>
+</div>
+<ul id="plateTreeUL" class="tree" ></ul>
+
+

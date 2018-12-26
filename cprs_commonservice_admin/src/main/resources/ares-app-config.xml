@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ares>
+	<pub nodeName="cprs_commonservice_admin" nodeNo="1"/>
+	<!-- 插件配置信息 -->
+	<plugins>
+				<plugin service-id="jres.logFactory" load-level="1"></plugin>
+		<plugin service-id="jres.configurationHelper" load-level="1"></plugin>
+		<plugin service-id="jres.xmlServiceModule" load-level="3"/>
+		<!-- CEP核心插件 -->
+		<plugin service-id="jres.cepcore" load-level="3">
+			<plugin-configuration>
+				<args threadCount="3" queueSize="500" debug="false">
+					<monitor port="8017" key="123456" enable="true"  isServletEnable="true" />
+				</args>
+				<bizservices>
+					<bizservice id="jres.mproxy" debug="false" />
+					<bizservice id="jres.xmlServiceModule" debug="false" >
+						<item serviceId="*" functionId="*" threadCount="100" queueSize="300" />
+					</bizservice>
+				</bizservices>
+				<routetables>
+					<routetable serviceId="com.hundsun.jres.manage" functionId="8" pluginId="jres.mproxy" />
+					<!-- 网关模块 -->
+					<routetable functionId="8801;3111??;" pluginId="jres.xmlServiceModule" />
+					<routetable functionId="*" nodeName="jres-ar" />
+				</routetables>
+				<eventchains>
+					<chain>jres.mproxy;jres.cepcore</chain>
+					<chain>jres.localService;jres.cepcore</chain>
+					<chain>jres.t2channel;jres.cepcore</chain>
+					<chain>jres.xmlServiceModule;jres.cepcore</chain>
+				</eventchains>
+			</plugin-configuration>
+		</plugin>
+
+		<plugin service-id="jres.localService" load-level="3">
+			<plugin-configuration>
+				<args debug="false" />
+				<time timeout="10000" />
+			</plugin-configuration>
+		</plugin>
+
+		<plugin service-id="jres.t2channel" load-level="3">
+			<plugin-configuration>
+				<server address="" port="9031" enable="false"/>
+				<performance sendPoolSize="20" senderQueueLength="300"/> 
+		        <client enable="true">
+		          <parents>
+		            <parent parentName="jres-ar" poolSize="5">
+		              <limit licenseFile="classpath:/client_license.dat" encrypt="HSBlowfish" />
+		              <members>
+		                 <member no="17" address="192.168.78.101" port ="8017"/>
+		              </members>
+		            </parent>
+		          </parents>
+		        </client>
+			</plugin-configuration>
+		</plugin>
+		
+		
+
+	</plugins>
+
+</ares>

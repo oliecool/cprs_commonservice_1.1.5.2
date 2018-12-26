@@ -1,0 +1,52 @@
+#macro ( direct $direct-output )$!direct-output#end
+#macro ( c $paras )
+	#if($!paras)
+		#set($content = "")
+		#set($key = "")
+		#set($value = "")
+		#foreach($para in $paras)
+			#if($velocityCount == 1)
+				#set($content = $contain.get($!para))
+			#else
+				#if($velocityCount % 2 == 0)
+					#set($key = $para)
+				#else
+					#set($value = $para)
+				#end
+				#set($content = $content.setParameter($key, $value))
+			#end
+		#end
+		$!content
+	#end
+#end
+
+################################################################################
+## 通用分页宏
+## 传入的分页数据参数必须使用"page"作为参数名, 并且仅支持这一个参数
+##
+## author: zhengdd
+## date: 2010-3-31
+## param: page 分页数据参数, 必须
+## param: form 页面查询条件的表单id, 可选
+## param: action 分页查询提交的action, 可选
+## param: expression 跳转页面页数的hidden对象, 可选
+################################################################################
+#macro ( pager $page $form $action $expression )
+	$contain.get("/contain/pager.htm").setParameter("page", $page).setParameter("action", $action).setParameter("form", $form).setParameter("expression", $expression)
+#end
+
+################################################################################
+## 通用AJAX分页宏
+## 同 #macro ( pager $page $form $action $expression )
+##
+## author: zhengdd
+## date: 2010-5-20
+## param: page 分页数据参数, 必须
+## param: form 页面查询条件的表单id, 可选
+## param: action 分页查询提交的action, 可选
+## param: expression 跳转页面页数的hidden对象, 可选
+################################################################################
+#macro ( ajaxPager $page $data $form $action $expression )
+	$contain.get("/contain/pager.htm").setParameter("page", $page).setParameter("action", $action).setParameter("form", $form).setParameter("data", $data).setParameter("expression", $expression)
+#end
+	

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd" default-lazy-init="false">
+    
+	<!-- 解密配置文件占位符,
+	结合web.xml[com.hundsun.jresplus.security.context.ContextLoaderListener]使用
+	监听器加密,本配置文件解密
+	新增配置(注意：order值必须为全项目中值最大，即最后加载) -->
+	<bean id="propertyConfigurer" class="com.hundsun.jresplus.security.common.EncryptPropertyPlaceholderConfigurer">
+		<property name="order" value="999" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="locations">
+			<list>
+			 <value>classpath:server.properties</value>
+			</list>
+		</property>
+	 </bean>
+</beans>

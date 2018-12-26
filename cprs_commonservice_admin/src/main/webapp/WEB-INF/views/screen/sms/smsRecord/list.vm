@@ -1,0 +1,75 @@
+<script>
+	function view(id){
+		window.location.href=appServer+"/smsRecord/view.htm?id="+id;
+	}
+	//去除搜索框输入内容的首尾空格
+	function change(obj,id){
+		var value=obj.trim();
+		$("#"+id).val(value);
+	}
+</script>
+<div class="main">
+	<form id="searchForm" action="$!{appServer}/smsRecord/list.htm" method="post" >
+		<div class="searchBox" style="width:100%">
+				<h5><span>搜索</span></h5>
+	    		<table>
+					<tr>	
+						<th>手机号：</th>
+		                <td>
+		                	#springBind("query.moblieNo")
+		                	<input type="text" id="title" name="${status.expression}" value="$!{status.value}" onchange="change(this.value,'title')"/>
+		                 </td>
+		                 <td>&nbsp;&nbsp;</td>
+			        	
+			        	<th>状态:</th>
+			        	<td>
+			        		#springBind("query.status")
+			        		<select id="type" name="${status.expression}" style="width:135px;">
+				    				<option value="" >请选择</option>	
+				    			#foreach($item in $!EnumSendSmsStatusMap)
+				    				<option value="$!{item.value}" #if($!{status.value} == $!{item.value}) selected #end>$!{item.name}</option>	
+				    			#end
+							</select>
+			            <td>
+			            <td>&nbsp;&nbsp;</td>			           
+			            <td>
+			                <input type="submit" name="Submit" value="搜索" class="btn"/>&nbsp;&nbsp;<input type="button" value="清空" class="btn" id="clearInput"/>
+			            </td>
+			        </tr>
+				</table>
+		</div>
+    </form>
+	##<div class="tool">
+		## <button type="button" class="btn" align="right" onclick="add()">新增广告</button>
+	##</div>
+		<div class="listBox">
+		<h5><span>短信列表</span></h5>
+		<table style="width:100%; vertical-align: middle;text-align: center;">
+			<tr>
+				<th style="vertical-align: middle !important;text-align: center;">接收人</th>
+				<th style="vertical-align: middle !important;text-align: center;">状态</td>
+	    		<th style="vertical-align: middle !important;text-align: center;">内容</th>
+				<th style="vertical-align: middle !important;text-align: center;">创建时间</th>
+				<th style="vertical-align: middle !important;text-align: center;">操作</th>
+	        </tr>
+	        #if($!{query} && ${query.totalCount} > 0)
+	            #foreach($record in ${query.getData()})
+	                <tr #if($!{velocityCount} % 2 == 0) class="bg" #end>					
+						<td><a href="#" onclick="view(${record.id})">$!{record.moblieNo}</a></td>
+						<td>$!EnumSendSmsStatusMap.get($!{record.status}).name</td>
+	            		<td>$!{stringUtils.substring($!{record.smsContent},0,40)}.........</td>
+	            		<td>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{record.gmtCreate})}</td>
+	            		<td>
+	            			<a href="#" onclick="view(${record.id})">详情</a>
+	            		</td>
+	                </tr>
+	            #end            
+	        #end
+        </table>
+		<div class="pages-box" >
+			<div class="pages">
+				#pager($!{query},'searchForm')
+            </div> 
+         </div>
+	</div>
+</div>

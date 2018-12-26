@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- 提供发短信的服务接口 -->
+	<bean id="remoteUcService" class="com.hundsun.jresplus.remoting.client.ServiceProxyFactoryBean">
+		<property name="serviceInterface" value="com.hundsun.network.uc.client.service.RemoteUcService"></property>
+	</bean>
+</beans>

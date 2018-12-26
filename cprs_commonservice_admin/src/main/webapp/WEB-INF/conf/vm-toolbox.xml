@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<toolbox>
+	<xhtml>true</xhtml>
+	<tool>
+		<key>stringUtils</key>
+		<scope>application</scope>
+		<class>org.apache.commons.lang.StringUtils
+		</class>
+	</tool>
+	<!-- <tool>
+		<key>stringUtil</key>
+		<scope>application</scope>
+		<class>com.hundsun.cprs.bid.util.StringUtil
+		</class>
+	</tool> -->
+	<!-- <tool>
+		<key>moneyUtil</key>
+		<scope>application</scope>
+		<class>com.hundsun.cprs.bid.util.MoneyUtils</class>
+	</tool> -->
+	<!-- <tool>
+		<key>dateUtil</key>
+		<scope>application</scope>
+		<class>com.hundsun.cprs.bid.util.DateUtil</class>
+	</tool> -->
+	<tool>
+		<key>dateTool</key>
+		<scope>application</scope>
+		<class>org.apache.velocity.tools.generic.DateTool
+		</class>
+		<parameter name="format" value="yyyy-MM-dd" />
+	</tool>
+	<tool>
+		<key>dateToolSS</key>
+		<scope>application</scope>
+		<class>org.apache.velocity.tools.generic.DateTool
+		</class>
+		<parameter name="format" value="yyyy-MM-dd hh:mm:ss" />
+	</tool>
+	<tool>
+		<key>numberTool</key>
+		<scope>application</scope>
+		<class>org.apache.velocity.tools.generic.NumberTool
+		</class>
+		<parameter name="format" value="#0.00" />
+	</tool>
+	<tool>
+		<key>escapeTool</key>
+		<scope>application</scope>
+		<class>org.apache.velocity.tools.generic.EscapeTool
+		</class>
+	</tool>
+	<!-- eclp adminAccess -->
+	<tool>
+		<key>adminAccess</key>
+		<scope>request</scope>
+		<class>com.hundsun.network.eclp.ex.security.AdminAccessVMTool</class>
+	</tool>
+
+</toolbox>

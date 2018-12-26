@@ -1,0 +1,38 @@
+@charset "UTF-8";
+/* 添加页面title样式
+add by linbo at 2017-07-12
+ */
+.c2 h5 {
+	font-size: 14px;
+	line-height: 25px;
+	border-bottom: 1px solid #CCCFFF;
+	width: 90%;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-weight: bold;
+	color: #08629E
+}
+
+.formbox .c4 td input.inp {
+	width: 70px;
+}
+
+.formbox .c4 .maintr th {
+	width: 130px;
+}
+
+.formbox .c4 .maintr td {
+	width: 200px;
+}
+
+.formbox .c4 select {
+	width: 75px;
+}
+
+.direct td {
+	text-align: center;
+}
+
+.direct .first td {
+	background: none repeat scroll 0 0 #D8E6F7;
+	line-height: 16px;
+}
